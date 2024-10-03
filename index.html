@@ -263,9 +263,10 @@
             }
         }
 
-        function authenticateAndExecute() {
-            tokenClient.requestAccessToken({ prompt: '' });
-        }
+       function authenticateAndExecute() {
+    console.log('Richiesta di accesso eseguita.');  // Log per confermare che l'accesso viene richiesto
+    tokenClient.requestAccessToken({ prompt: '' });
+}
 
         document.addEventListener('DOMContentLoaded', function() {
             gapiLoad();
@@ -336,16 +337,23 @@
         }
 
         async function bookLoan(bookTitle, userEmail) {
-            const books = await fetchBooks();
-            const bookRow = books.findIndex(book => book[0] === bookTitle);
+    console.log('Inizio processo di prenotazione per il libro:', bookTitle, 'da parte di:', userEmail);
+    const books = await fetchBooks();
+    const bookRow = books.findIndex(book => book[0] === bookTitle);
 
-            if (books[bookRow][2] === 'Disponibile') {
-                await updateBookStatus(bookRow + 1, 'Non disponibile', userEmail);
-                loadBooks();
-            } else {
-                alert('Questo libro è già stato preso in prestito.');
-            }
+    if (books[bookRow][2] === 'Disponibile') {
+        console.log('Libro disponibile, aggiornamento in corso...');
+        try {
+            await updateBookStatus(bookRow + 1, 'Non disponibile', userEmail);
+            console.log('Stato del libro aggiornato correttamente.');
+            loadBooks();  // Ricarica i libri dopo aver aggiornato lo stato
+        } catch (error) {
+            console.error('Errore durante l\'aggiornamento del libro:', error);
         }
+    } else {
+        alert('Questo libro è già stato preso in prestito.');
+    }
+}
 
         async function returnBook(bookTitle, userEmail) {
             const books = await fetchBooks();
@@ -360,15 +368,21 @@
         }
 
         async function updateBookStatus(row, status, email = '') {
-            await gapi.client.sheets.spreadsheets.values.update({
-                spreadsheetId: SPREADSHEET_ID,
-                range: `libreriaprincipale!C${row}:D${row}`,
-                valueInputOption: 'USER_ENTERED',
-                resource: {
-                    values: [[status, email]],
-                },
-            });
-        }
+    console.log('Aggiornamento dello stato del libro sulla riga:', row);
+    try {
+        await gapi.client.sheets.spreadsheets.values.update({
+            spreadsheetId: SPREADSHEET_ID,
+            range: `libreriaprincipale!C${row}:D${row}`,
+            valueInputOption: 'USER_ENTERED',
+            resource: {
+                values: [[status, email]],
+            },
+        });
+        console.log('Aggiornamento completato.');
+    } catch (error) {
+        console.error('Errore durante l\'aggiornamento su Google Sheets:', error);
+    }
+}
     </script>
 </body>
 </html>
