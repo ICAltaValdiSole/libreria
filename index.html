@@ -109,6 +109,7 @@
         }
     </style>
     <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
 </head>
 <body>
     <header>
@@ -154,10 +155,9 @@
         const API_KEY = 'AIzaSyCBAMHlMKwdPs8hlvRnxxNOWwdXxqnKC3k';
         const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
+        let tokenClient;
         let gapiInited = false;
         let gisInited = false;
-        let tokenClient;
-        let accessToken = null;
 
         // Carica la libreria GAPI e GIS per OAuth
         function gapiLoad() {
@@ -172,7 +172,7 @@
                 scope: SCOPES,
             }).then(() => {
                 gapiInited = true;
-                gisLoad();
+                maybeEnableButtons();
             });
         }
 
@@ -181,15 +181,21 @@
                 client_id: CLIENT_ID,
                 scope: SCOPES,
                 callback: (response) => {
-                    accessToken = response.access_token;
-                    console.log('Access Token ricevuto:', accessToken);
+                    console.log('Access Token ricevuto:', response.access_token);
                 },
             });
             gisInited = true;
+            maybeEnableButtons();
+        }
+
+        function maybeEnableButtons() {
+            if (gapiInited && gisInited) {
+                loadBooks();  // Solo quando OAuth e GAPI sono pronti
+            }
         }
 
         function authenticateAndExecute(func) {
-            if (!accessToken) {
+            if (tokenClient) {
                 tokenClient.requestAccessToken();
             }
             func();
@@ -197,7 +203,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             gapiLoad();
-            loadBooks();
+            gisLoad();
         });
 
         async function loadBooks() {
