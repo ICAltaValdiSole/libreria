@@ -45,12 +45,13 @@
         }
 
         function fetchBooks() {
-        gapi.client.sheets.spreadsheets.values.get({
+    gapi.client.sheets.spreadsheets.values.get({
         spreadsheetId: '1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ',
-        range: 'libreriaprincipale!A2:B',  // Nome del foglio aggiornato
+        range: 'libreriaprincipale!A2:B',
     }).then((response) => {
         var range = response.result;
-        if (range.values.length > 0) {
+        console.log(range);  // Aggiungi questo per vedere l'output dell'oggetto range
+        if (range.values && range.values.length > 0) {
             displayBooks(range.values);
         } else {
             console.log('No data found.');
@@ -59,6 +60,7 @@
         console.log('Error: ' + response.result.error.message);
     });
 }
+
 
 
         function displayBooks(books) {
