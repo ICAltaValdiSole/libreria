@@ -80,20 +80,20 @@
             background-color: white;
             padding: 20px;
             border-radius: 10px;
-            max-width: 400px;
+            max-width: 350px;
             width: 100%;
             text-align: center;
         }
 
         #emailModal input[type="email"] {
-            width: 100%;
+            width: 90%;
             padding: 10px;
             font-size: 16px;
             margin-bottom: 10px;
         }
 
         #emailModal button {
-            width: 100%;
+            width: 90%;
             padding: 10px;
             font-size: 16px;
         }
@@ -220,6 +220,9 @@
                     successMessage.style.display = 'block';
                     successMessage.textContent = `Hai prenotato il libro: ${selectedBook}`;
                     loadBooks();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000); // Ricarica dopo 2 secondi
                 }
             } else if (actionType === 'restituisci') {
                 const result = await returnBook(selectedBook, email);
@@ -227,6 +230,9 @@
                     successMessage.style.display = 'block';
                     successMessage.textContent = `Hai restituito il libro: ${selectedBook}`;
                     loadBooks();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000); // Ricarica dopo 2 secondi
                 }
             }
 
@@ -273,6 +279,9 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
+            if (response.status === 401) {
+                alert('Errore di autorizzazione. Controlla le autorizzazioni API.');
+            }
             const data = await response.json();
             return data;
         }
