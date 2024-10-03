@@ -115,6 +115,7 @@
         #emailModal.active {
             opacity: 1;
             visibility: visible;
+             display: flex !important;
         }
 
         #emailModal .modal-content {
@@ -308,11 +309,17 @@
         }
 
         function showEmailModal(type, book) {
-            console.log('Apertura del modale per', type, 'il libro:', book);
-            actionType = type;
-            selectedBook = book;
-            document.getElementById('emailModal').style.display = 'flex';
-        }
+    console.log('Apertura del modale per', type, 'il libro:', book);
+    actionType = type;
+    selectedBook = book;
+    
+    // Apre il modale
+    const modal = document.getElementById('emailModal');
+    modal.style.display = 'flex';
+    
+    // Forza la visibilità del modale e registra il log
+    console.log('Modale aperto:', modal.style.display);
+}
 
         async function submitEmail() {
             const email = document.getElementById('emailInput').value;
