@@ -6,15 +6,15 @@
     <title>Libreria Scolastica</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f2f5;
+            background-color: #f4f4f4;
         }
         header {
-            background-color: #007bff;
+            background-color: #4CAF50;
             color: white;
-            padding: 20px 0;
+            padding: 10px 0;
             text-align: center;
             font-size: 24px;
         }
@@ -38,12 +38,12 @@
             text-align: left;
         }
         th {
-            background-color: #007bff;
+            background-color: #4CAF50;
             color: white;
         }
         button {
             padding: 10px 20px;
-            background-color: #007bff;
+            background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
@@ -54,13 +54,58 @@
             background-color: grey;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #45a049;
         }
         footer {
             text-align: center;
             padding: 20px;
-            background-color: #007bff;
+            background-color: #4CAF50;
             color: white;
+        }
+
+        /* Popup Styling */
+        #emailModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        #emailModal .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        #emailModal input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        #emailModal button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+
+        .success-message {
+            color: green;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -92,12 +137,13 @@
     </footer>
 
     <!-- Pop-up per l'email -->
-    <div id="emailModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
-        <div style="background:white; padding:20px; border-radius:10px; max-width:400px; width:100%;">
+    <div id="emailModal" style="display:none;">
+        <div class="modal-content">
             <h3>Inserisci la tua email scolastica</h3>
-            <input type="email" id="emailInput" placeholder="tuoemail@scuola.it" style="width:100%; padding:10px; font-size:16px;">
-            <br><br>
+            <input type="email" id="emailInput" placeholder="tuoemail@icaltavaldisole.it">
             <button onclick="submitEmail()">Conferma</button>
+            <p class="error-message" id="error-message" style="display:none;"></p>
+            <p class="success-message" id="success-message" style="display:none;"></p>
         </div>
     </div>
 
@@ -151,21 +197,40 @@
             actionType = type;
             selectedBook = book;
             document.getElementById('emailModal').style.display = 'flex';
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
         }
 
         // Funzione per inviare l'email e gestire l'azione di prenotazione o restituzione
-        function submitEmail() {
+        async function submitEmail() {
             const email = document.getElementById('emailInput').value;
-            if (email) {
-                document.getElementById('emailModal').style.display = 'none';
-                if (actionType === 'prenota') {
-                    bookLoan(selectedBook, email);
-                } else if (actionType === 'restituisci') {
-                    returnBook(selectedBook, email);
-                }
-            } else {
-                alert('Inserisci una email valida.');
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+
+            // Controllo che l'email termini con @icaltavaldisole.it
+            if (!email.endsWith('@icaltavaldisole.it')) {
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = 'Devi usare una email @icaltavaldisole.it';
+                return;
             }
+
+            if (actionType === 'prenota') {
+                const result = await bookLoan(selectedBook, email);
+                if (result) {
+                    successMessage.style.display = 'block';
+                    successMessage.textContent = `Hai prenotato il libro: ${selectedBook}`;
+                    loadBooks();
+                }
+            } else if (actionType === 'restituisci') {
+                const result = await returnBook(selectedBook, email);
+                if (result) {
+                    successMessage.style.display = 'block';
+                    successMessage.textContent = `Hai restituito il libro: ${selectedBook}`;
+                    loadBooks();
+                }
+            }
+
+            document.getElementById('emailModal').style.display = 'none';
         }
 
         // Funzione per prenotare un libro
@@ -175,10 +240,10 @@
 
             if (books[bookRow][2] === 'Disponibile') {
                 await updateBookStatus(bookRow + 1, 'Non disponibile', userEmail);
-                alert(`Hai prenotato il libro: ${bookTitle}`);
-                loadBooks();
+                return true;
             } else {
                 alert('Questo libro è già stato preso in prestito.');
+                return false;
             }
         }
 
@@ -189,10 +254,10 @@
 
             if (books[bookRow][3] === userEmail) {
                 await updateBookStatus(bookRow + 1, 'Disponibile', '');
-                alert('Libro restituito correttamente.');
-                loadBooks();
+                return true;
             } else {
                 alert('Non sei tu ad aver preso in prestito questo libro.');
+                return false;
             }
         }
 
