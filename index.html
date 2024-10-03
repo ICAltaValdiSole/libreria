@@ -5,198 +5,150 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Libreria Scolastica con OAuth</title>
     <style>
-   /* Corpo e contenitore */
-body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f9;
-    transition: background-color 0.4s ease;
-}
+        /* Corpo e contenitore */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            transition: background-color 0.4s ease;
+        }
 
-.container {
-    width: 80%;
-    margin: 50px auto;
-    background-color: white;
-    padding: 30px;
-    box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
-    transition: box-shadow 0.3s ease;
-}
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            background-color: white;
+            padding: 30px;
+            box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            transition: box-shadow 0.3s ease;
+        }
 
-/* Intestazione */
-header {
-    background-color: #4CAF50;
-    color: white;
-    padding: 20px 0;
-    text-align: center;
-    font-size: 32px;
-    letter-spacing: 1px;
-    font-weight: bold;
-}
+        /* Intestazione */
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 32px;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
 
-/* Tabella */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 25px;
-}
+        /* Tabella */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
 
-table, th, td {
-    border: 1px solid #ddd;
-    transition: all 0.3s ease;
-}
+        table, th, td {
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+        }
 
-th, td {
-    padding: 18px;
-    text-align: left;
-}
+        th, td {
+            padding: 18px;
+            text-align: left;
+        }
 
-th {
-    background-color: #4CAF50;
-    color: white;
-    font-size: 18px;
-}
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 18px;
+        }
 
-td {
-    font-size: 16px;
-}
+        td {
+            font-size: 16px;
+        }
 
-tr:hover {
-    background-color: #f1f1f1;
-    transition: background-color 0.3s ease;
-}
+        tr:hover {
+            background-color: #f1f1f1;
+            transition: background-color 0.3s ease;
+        }
 
-/* Pulsanti */
-button {
-    padding: 12px 25px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 8px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
+        /* Pulsanti */
+        button {
+            padding: 12px 25px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
 
-button:hover {
-    background-color: #45a049;
-    transform: translateY(-3px);
-    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
-}
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-3px);
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+        }
 
-button:disabled {
-    background-color: grey;
-    cursor: not-allowed;
-}
+        button:disabled {
+            background-color: grey;
+            cursor: not-allowed;
+        }
 
-/* Popup */
-#emailModal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.4s ease, visibility 0.4s;
-}
+        /* Popup */
+        #emailModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s;
+        }
 
-#emailModal.active {
-    opacity: 1;
-    visibility: visible;
-}
+        #emailModal.active {
+            opacity: 1;
+            visibility: visible;
+        }
 
-#emailModal .modal-content {
-    background-color: white;
-    padding: 40px;
-    border-radius: 12px;
-    max-width: 400px;
-    width: 90%;
-    text-align: center;
-    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
-    transform: translateY(-50px);
-    transition: transform 0.4s ease;
-}
+        #emailModal .modal-content {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-50px);
+            transition: transform 0.4s ease;
+        }
 
-#emailModal.active .modal-content {
-    transform: translateY(0);
-}
+        #emailModal.active .modal-content {
+            transform: translateY(0);
+        }
 
-#emailModal input[type="email"] {
-    width: 100%;
-    padding: 15px;
-    font-size: 16px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-}
+        #emailModal input[type="email"] {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
 
-/* Footer */
-footer {
-    text-align: center;
-    padding: 20px;
-    background-color: #4CAF50;
-    color: white;
-    font-size: 14px;
-    position: relative;
-    bottom: 0;
-    width: 100%;
-    border-top: 1px solid #ddd;
-    transition: background-color 0.3s ease;
-}
-
-/* Animazioni generali */
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.container {
-    animation: fadeIn 0.6s ease;
-}
-
-/* Dark Mode */
-@media (prefers-color-scheme: dark) {
-    body {
-        background-color: #121212;
-        color: #ffffff;
-    }
-    .container {
-        background-color: #1f1f1f;
-        box-shadow: none;
-    }
-    table, th, td {
-        border: 1px solid #333;
-        color: #dddddd;
-    }
-    th {
-        background-color: #333;
-    }
-    tr:hover {
-        background-color: #2a2a2a;
-    }
-    button {
-        background-color: #3d7e3d;
-    }
-    button:hover {
-        background-color: #4caf50;
-    }
-    footer {
-        background-color: #1f1f1f;
-        border-top: 1px solid #333;
-    }
-}
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 14px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            border-top: 1px solid #ddd;
+            transition: background-color 0.3s ease;
+        }
 
     </style>
     <script src="https://apis.google.com/js/api.js"></script>
@@ -242,13 +194,14 @@ footer {
 
     <script>
         const SPREADSHEET_ID = '1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ';
-        const CLIENT_ID = '1010871423571-uafvdmu0qu601va4udkqc85p14cemvlu.apps.googleusercontent.com';
+        const CLIENT_ID = '1010871423571-0qhua7brqmrb73mee53fnnhiqus6ibeh.apps.googleusercontent.com';
         const API_KEY = 'AIzaSyCBAMHlMKwdPs8hlvRnxxNOWwdXxqnKC3k';
         const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
         let tokenClient;
         let gapiInited = false;
         let gisInited = false;
+        let accessToken = null;
 
         // Carica la libreria GAPI e GIS per OAuth
         function gapiLoad() {
@@ -258,9 +211,7 @@ footer {
         function initializeGapiClient() {
             gapi.client.init({
                 apiKey: API_KEY,
-                clientId: CLIENT_ID,
                 discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
-                scope: SCOPES,
             }).then(() => {
                 gapiInited = true;
                 maybeEnableButtons();
@@ -272,11 +223,15 @@ footer {
                 client_id: CLIENT_ID,
                 scope: SCOPES,
                 callback: (response) => {
-                    console.log('Access Token ricevuto:', response.access_token);
+                    if (response.error !== undefined) {
+                        console.error('Errore nell\'ottenere il token di accesso:', response.error);
+                        return;
+                    }
+                    accessToken = response.access_token;
+                    loadBooks();  // Chiama la funzione per caricare i libri solo dopo aver ottenuto l'access token
                 },
             });
             gisInited = true;
-            maybeEnableButtons();
         }
 
         function maybeEnableButtons() {
@@ -285,15 +240,13 @@ footer {
             }
         }
 
-       function authenticateAndExecute(func) {
-    if (!tokenClient) {
-        console.error("Token Client non inizializzato correttamente.");
-        return;
-    }
-    tokenClient.requestAccessToken();
-    func();
-}
-
+        function authenticateAndExecute(func) {
+            if (!accessToken) {
+                tokenClient.requestAccessToken({ prompt: '' });
+            } else {
+                func();
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
             gapiLoad();
@@ -327,21 +280,14 @@ footer {
             });
         }
 
-     async function fetchBooks() {
-    const range = 'libreriaprincipale!A:D';
-    try {
-        const response = await gapi.client.sheets.spreadsheets.values.get({
-            spreadsheetId: SPREADSHEET_ID,
-            range: range,
-        });
-        console.log("Dati ricevuti:", response.result.values);  // Log dei dati ricevuti
-        return response.result.values || [];
-    } catch (error) {
-        console.error("Errore nel caricamento dei libri:", error);  // Log di eventuali errori
-        return [];
-    }
-}
-
+        async function fetchBooks() {
+            const range = 'libreriaprincipale!A:D';
+            const response = await gapi.client.sheets.spreadsheets.values.get({
+                spreadsheetId: SPREADSHEET_ID,
+                range: range,
+            });
+            return response.result.values || [];
+        }
 
         function showEmailModal(type, book) {
             actionType = type;
@@ -403,3 +349,4 @@ footer {
     </script>
 </body>
 </html>
+
