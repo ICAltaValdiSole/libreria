@@ -6,20 +6,24 @@
     <title>Libreria Scolastica</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #f0f2f5;
         }
         header {
-            background-color: #4CAF50;
+            background-color: #007bff;
             color: white;
-            padding: 10px 0;
+            padding: 20px 0;
             text-align: center;
+            font-size: 24px;
         }
         .container {
             width: 80%;
             margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         }
         table {
             width: 100%;
@@ -27,30 +31,35 @@
             margin-bottom: 20px;
         }
         table, th, td {
-            border: 1px solid black;
+            border: 1px solid #ddd;
         }
         th, td {
-            padding: 8px;
+            padding: 12px;
             text-align: left;
         }
         th {
-            background-color: #4CAF50;
+            background-color: #007bff;
             color: white;
         }
         button {
-            padding: 10px;
-            background-color: #4CAF50;
+            padding: 10px 20px;
+            background-color: #007bff;
             color: white;
             border: none;
             cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
         }
         button:disabled {
             background-color: grey;
         }
+        button:hover {
+            background-color: #0056b3;
+        }
         footer {
             text-align: center;
-            padding: 10px;
-            background-color: #4CAF50;
+            padding: 20px;
+            background-color: #007bff;
             color: white;
         }
     </style>
@@ -76,23 +85,33 @@
                 <!-- Libri verranno inseriti qui -->
             </tbody>
         </table>
-
-        <h3>Prenota o Restituisci un Libro</h3>
-        <label for="email">Email scolastica:</label>
-        <input type="email" id="email" placeholder="tuoemail@scuola.it">
-        <br><br>
-        <button onclick="loadBooks()">Carica Libri</button>
     </div>
 
     <footer>
         <p>Libreria Scolastica - I.C.AltaValDiSole</p>
     </footer>
 
+    <!-- Pop-up per l'email -->
+    <div id="emailModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
+        <div style="background:white; padding:20px; border-radius:10px; max-width:400px; width:100%;">
+            <h3>Inserisci la tua email scolastica</h3>
+            <input type="email" id="emailInput" placeholder="tuoemail@scuola.it" style="width:100%; padding:10px; font-size:16px;">
+            <br><br>
+            <button onclick="submitEmail()">Conferma</button>
+        </div>
+    </div>
+
     <script>
         const SPREADSHEET_ID = '1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ';
         const API_KEY = 'AIzaSyCBAMHlMKwdPs8hlvRnxxNOWwdXxqnKC3k';
+        let actionType = '';
+        let selectedBook = '';
 
-        // Carica i libri dal foglio Google
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBooks();
+        });
+
+        // Funzione per caricare i libri automaticamente al caricamento della pagina
         async function loadBooks() {
             const books = await fetchBooks();
             const tableBody = document.getElementById('booksTable').getElementsByTagName('tbody')[0];
@@ -107,13 +126,12 @@
                 if (book[2] === 'Disponibile') {
                     const button = document.createElement('button');
                     button.textContent = 'Prenota';
-                    button.onclick = () => bookLoan(book[0], document.getElementById('email').value);
+                    button.onclick = () => showEmailModal('prenota', book[0]);
                     actionsCell.appendChild(button);
                 } else {
                     const button = document.createElement('button');
                     button.textContent = 'Restituisci';
-                    button.onclick = () => returnBook(book[0], document.getElementById('email').value);
-                    button.disabled = book[3] !== document.getElementById('email').value;
+                    button.onclick = () => showEmailModal('restituisci', book[0]);
                     actionsCell.appendChild(button);
                 }
             });
@@ -126,6 +144,28 @@
             const response = await fetch(url);
             const data = await response.json();
             return data.values || [];
+        }
+
+        // Funzione per mostrare il pop-up di inserimento email
+        function showEmailModal(type, book) {
+            actionType = type;
+            selectedBook = book;
+            document.getElementById('emailModal').style.display = 'flex';
+        }
+
+        // Funzione per inviare l'email e gestire l'azione di prenotazione o restituzione
+        function submitEmail() {
+            const email = document.getElementById('emailInput').value;
+            if (email) {
+                document.getElementById('emailModal').style.display = 'none';
+                if (actionType === 'prenota') {
+                    bookLoan(selectedBook, email);
+                } else if (actionType === 'restituisci') {
+                    returnBook(selectedBook, email);
+                }
+            } else {
+                alert('Inserisci una email valida.');
+            }
         }
 
         // Funzione per prenotare un libro
@@ -158,7 +198,7 @@
 
         // Funzione per aggiornare lo stato del libro nel Google Sheet
         async function updateBookStatus(row, status, email = '') {
-            const range = `Sheet1!C${row}:D${row}`;
+            const range = `libreriaprincipale!C${row}:D${row}`;
             const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?valueInputOption=USER_ENTERED&key=${API_KEY}`;
             const body = {
                 values: [[status, email]]
@@ -174,5 +214,3 @@
     </script>
 </body>
 </html>
-
-
