@@ -47,7 +47,7 @@
         function fetchBooks() {
             gapi.client.sheets.spreadsheets.values.get({
                 spreadsheetId: '1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ',
-                range: 'Sheet1!A2:B',
+                range: 'libreriaprincipale',
             }).then((response) => {
                 var range = response.result;
                 if (range.values.length > 0) {
