@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Libreria Scolastica</title>
+    <title>Libreria Scolastica con OAuth</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -108,6 +108,7 @@
             margin-top: 10px;
         }
     </style>
+    <script src="https://apis.google.com/js/api.js"></script>
 </head>
 <body>
     <header>
@@ -149,141 +150,148 @@
 
     <script>
         const SPREADSHEET_ID = '1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ';
+        const CLIENT_ID = '1010871423571-0qhua7brqmrb73mee53fnnhiqus6ibeh.apps.googleusercontent.com';
         const API_KEY = 'AIzaSyCBAMHlMKwdPs8hlvRnxxNOWwdXxqnKC3k';
-        let actionType = '';
-        let selectedBook = '';
+        const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
-        document.addEventListener('DOMContentLoaded', function() {
-            loadBooks();
-        });
+        let gapiInited = false;
+        let gisInited = false;
+        let tokenClient;
+        let accessToken = null;
 
-        // Funzione per caricare i libri automaticamente al caricamento della pagina
-        async function loadBooks() {
-            const books = await fetchBooks();
-            const tableBody = document.getElementById('booksTable').getElementsByTagName('tbody')[0];
-            tableBody.innerHTML = ''; // Pulisce la tabella
-            books.forEach((book, index) => {
-                const row = tableBody.insertRow();
-                row.insertCell(0).textContent = book[0]; // Titolo
-                row.insertCell(1).textContent = book[1]; // Autore
-                row.insertCell(2).textContent = book[2]; // Stato
+        // Carica la libreria GAPI e GIS per OAuth
+        function gapiLoad() {
+            gapi.load('client', initializeGapiClient);
+        }
 
-                const actionsCell = row.insertCell(3);
-                if (book[2] === 'Disponibile') {
-                    const button = document.createElement('button');
-                    button.textContent = 'Prenota';
-                    button.onclick = () => showEmailModal('prenota', book[0]);
-                    actionsCell.appendChild(button);
-                } else {
-                    const button = document.createElement('button');
-                    button.textContent = 'Restituisci';
-                    button.onclick = () => showEmailModal('restituisci', book[0]);
-                    actionsCell.appendChild(button);
-                }
+        function initializeGapiClient() {
+            gapi.client.init({
+                apiKey: API_KEY,
+                clientId: CLIENT_ID,
+                discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
+                scope: SCOPES,
+            }).then(() => {
+                gapiInited = true;
+                gisLoad();
             });
         }
 
-        // Funzione per ottenere i dati dei libri
-        async function fetchBooks() {
-            const range = 'libreriaprincipale!A:D';
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
-            const response = await fetch(url);
-            const data = await response.json();
-            return data.values || [];
+        function gisLoad() {
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: SCOPES,
+                callback: (response) => {
+                    accessToken = response.access_token;
+                    console.log('Access Token ricevuto:', accessToken);
+                },
+            });
+            gisInited = true;
         }
 
-        // Funzione per mostrare il pop-up di inserimento email
+        function authenticateAndExecute(func) {
+            if (!accessToken) {
+                tokenClient.requestAccessToken();
+            }
+            func();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            gapiLoad();
+            loadBooks();
+        });
+
+        async function loadBooks() {
+            authenticateAndExecute(async () => {
+                const books = await fetchBooks();
+                const tableBody = document.getElementById('booksTable').getElementsByTagName('tbody')[0];
+                tableBody.innerHTML = ''; // Pulisce la tabella
+                books.forEach((book, index) => {
+                    const row = tableBody.insertRow();
+                    row.insertCell(0).textContent = book[0]; // Titolo
+                    row.insertCell(1).textContent = book[1]; // Autore
+                    row.insertCell(2).textContent = book[2]; // Stato
+
+                    const actionsCell = row.insertCell(3);
+                    if (book[2] === 'Disponibile') {
+                        const button = document.createElement('button');
+                        button.textContent = 'Prenota';
+                        button.onclick = () => showEmailModal('prenota', book[0]);
+                        actionsCell.appendChild(button);
+                    } else {
+                        const button = document.createElement('button');
+                        button.textContent = 'Restituisci';
+                        button.onclick = () => showEmailModal('restituisci', book[0]);
+                        actionsCell.appendChild(button);
+                    }
+                });
+            });
+        }
+
+        async function fetchBooks() {
+            const range = 'libreriaprincipale!A:D';
+            const response = await gapi.client.sheets.spreadsheets.values.get({
+                spreadsheetId: SPREADSHEET_ID,
+                range: range,
+            });
+            return response.result.values || [];
+        }
+
         function showEmailModal(type, book) {
             actionType = type;
             selectedBook = book;
             document.getElementById('emailModal').style.display = 'flex';
-            document.getElementById('error-message').style.display = 'none';
-            document.getElementById('success-message').style.display = 'none';
         }
 
-        // Funzione per inviare l'email e gestire l'azione di prenotazione o restituzione
         async function submitEmail() {
             const email = document.getElementById('emailInput').value;
-            const errorMessage = document.getElementById('error-message');
-            const successMessage = document.getElementById('success-message');
 
-            // Controllo che l'email termini con @icaltavaldisole.it
             if (!email.endsWith('@icaltavaldisole.it')) {
-                errorMessage.style.display = 'block';
-                errorMessage.textContent = 'Devi usare una email @icaltavaldisole.it';
+                alert('Devi usare una email @icaltavaldisole.it');
                 return;
             }
 
             if (actionType === 'prenota') {
-                const result = await bookLoan(selectedBook, email);
-                if (result) {
-                    successMessage.style.display = 'block';
-                    successMessage.textContent = `Hai prenotato il libro: ${selectedBook}`;
-                    loadBooks();
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000); // Ricarica dopo 2 secondi
-                }
+                await bookLoan(selectedBook, email);
             } else if (actionType === 'restituisci') {
-                const result = await returnBook(selectedBook, email);
-                if (result) {
-                    successMessage.style.display = 'block';
-                    successMessage.textContent = `Hai restituito il libro: ${selectedBook}`;
-                    loadBooks();
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000); // Ricarica dopo 2 secondi
-                }
+                await returnBook(selectedBook, email);
             }
 
             document.getElementById('emailModal').style.display = 'none';
         }
 
-        // Funzione per prenotare un libro
         async function bookLoan(bookTitle, userEmail) {
             const books = await fetchBooks();
             const bookRow = books.findIndex(book => book[0] === bookTitle);
 
             if (books[bookRow][2] === 'Disponibile') {
                 await updateBookStatus(bookRow + 1, 'Non disponibile', userEmail);
-                return true;
+                loadBooks();
             } else {
                 alert('Questo libro è già stato preso in prestito.');
-                return false;
             }
         }
 
-        // Funzione per restituire un libro
         async function returnBook(bookTitle, userEmail) {
             const books = await fetchBooks();
             const bookRow = books.findIndex(book => book[0] === bookTitle);
 
             if (books[bookRow][3] === userEmail) {
                 await updateBookStatus(bookRow + 1, 'Disponibile', '');
-                return true;
+                loadBooks();
             } else {
                 alert('Non sei tu ad aver preso in prestito questo libro.');
-                return false;
             }
         }
 
-        // Funzione per aggiornare lo stato del libro nel Google Sheet
         async function updateBookStatus(row, status, email = '') {
-            const range = `libreriaprincipale!C${row}:D${row}`;
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?valueInputOption=USER_ENTERED&key=${API_KEY}`;
-            const body = {
-                values: [[status, email]]
-            };
-            const response = await fetch(url, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
+            await gapi.client.sheets.spreadsheets.values.update({
+                spreadsheetId: SPREADSHEET_ID,
+                range: `libreriaprincipale!C${row}:D${row}`,
+                valueInputOption: 'USER_ENTERED',
+                resource: {
+                    values: [[status, email]],
+                },
             });
-            if (response.status === 401) {
-                alert('Errore di autorizzazione. Controlla le autorizzazioni API.');
-            }
-            const data = await response.json();
-            return data;
         }
     </script>
 </body>
