@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -24,11 +24,13 @@
             transition: box-shadow 0.3s ease;
         }
 
-        /* Intestazione */
+        /* Intestazione con immagine di sfondo */
         header {
-            background-color: #4CAF50;
+            background-image: url('sfondo.jpeg'); /* Sostituisci con il link dell'immagine desiderata */
+            background-size: cover;
+            background-position: center;
             color: white;
-            padding: 20px 0;
+            padding: 50px 0;
             text-align: center;
             font-size: 32px;
             letter-spacing: 1px;
@@ -247,6 +249,11 @@
         });
 
         async function loadBooks() {
+            if (!gapiInited) {
+                console.error('La libreria GAPI non è ancora stata inizializzata.');
+                return;
+            }
+
             const books = await fetchBooks();
             const tableBody = document.getElementById('booksTable').getElementsByTagName('tbody')[0];
             tableBody.innerHTML = ''; // Pulisce la tabella
@@ -272,6 +279,11 @@
         }
 
         async function fetchBooks() {
+            if (!gapi.client.sheets) {
+                console.error('La libreria Google Sheets non è stata caricata.');
+                return [];
+            }
+
             const range = 'libreriaprincipale!A:D';
             const response = await gapi.client.sheets.spreadsheets.values.get({
                 spreadsheetId: SPREADSHEET_ID,
