@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Libreria Scolastica con OAuth</title>
     <style>
-        /* Corpo e contenitore */
         body {
             font-family: 'Montserrat', sans-serif;
             margin: 0;
@@ -25,9 +24,8 @@
             transition: box-shadow 0.3s ease;
         }
 
-        /* Intestazione con immagine di sfondo */
         header {
-            background-image: url('sfondo.jpeg'); 
+            background-image: url('sfondo.jpeg');
             background-size: cover;
             background-position: center;
             color: white;
@@ -45,7 +43,6 @@
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
         }
 
-        /* Tabella */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -64,7 +61,7 @@
         }
 
         th {
-            background-color: #607d8b;  /* Colore grigio-azzurro moderno */
+            background-color: #607d8b;
             color: white;
             font-size: 18px;
         }
@@ -78,10 +75,9 @@
             transition: background-color 0.3s ease;
         }
 
-        /* Pulsanti */
         button {
             padding: 10px 20px;
-            background-color: #607d8b; /* Stesso colore grigio-azzurro */
+            background-color: #607d8b;
             color: white;
             border: none;
             cursor: pointer;
@@ -91,7 +87,7 @@
         }
 
         button:hover {
-            background-color: #546e7a; /* Colore più scuro per hover */
+            background-color: #546e7a;
             transform: translateY(-3px);
             box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
         }
@@ -101,7 +97,6 @@
             cursor: not-allowed;
         }
 
-        /* Popup */
         #emailModal {
             display: none;
             position: fixed;
@@ -147,7 +142,6 @@
             border-radius: 8px;
         }
 
-        /* Footer */
         footer {
             text-align: center;
             padding: 20px;
@@ -160,7 +154,6 @@
             border-top: 1px solid #ddd;
             transition: background-color 0.3s ease;
         }
-
     </style>
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="https://accounts.google.com/gsi/client"></script>
@@ -192,7 +185,6 @@
         <p>Libreria Scolastica - I.C.AltaValDiSole</p>
     </footer>
 
-    <!-- Pop-up per l'email -->
     <div id="emailModal" style="display:none;">
         <div class="modal-content">
             <h3>Inserisci la tua email scolastica</h3>
@@ -213,11 +205,11 @@
         let gapiInited = false;
         let gisInited = false;
         let accessToken = null;
-
-        // Log per tracciare l'inizializzazione
-        console.log("Inizio il caricamento della libreria GAPI...");
+        let actionType = '';
+        let selectedBook = '';
 
         function gapiLoad() {
+            console.log('Inizio il caricamento di GAPI...');
             gapi.load('client', initializeGapiClient);
         }
 
@@ -227,14 +219,15 @@
                 discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
             }).then(() => {
                 gapiInited = true;
-                console.log("GAPI inizializzata correttamente.");
+                console.log("GAPI è stato inizializzato correttamente.");
                 maybeEnableButtons();
             }).catch(error => {
-                console.error("Errore durante l'inizializzazione di GAPI: ", error);
+                console.error("Errore nell'inizializzazione di GAPI: ", error);
             });
         }
 
         function gisLoad() {
+            console.log('Inizio il caricamento di GIS...');
             tokenClient = google.accounts.oauth2.initTokenClient({
                 client_id: CLIENT_ID,
                 scope: SCOPES,
@@ -253,20 +246,16 @@
                 },
             });
             gisInited = true;
-            console.log("GIS inizializzata correttamente.");
+            console.log("GIS è stato inizializzato correttamente.");
             maybeEnableButtons();
         }
 
         function maybeEnableButtons() {
             if (gapiInited && gisInited) {
-                loadBooks();  // Solo quando OAuth e GAPI sono pronti
+                console.log('Entrambe le librerie sono pronte, carico i libri...');
+                loadBooks();
             }
         }
-
-       function authenticateAndExecute() {
-    console.log('Richiesta di accesso eseguita.');  // Log per confermare che l'accesso viene richiesto
-    tokenClient.requestAccessToken({ prompt: '' });
-}
 
         document.addEventListener('DOMContentLoaded', function() {
             gapiLoad();
@@ -275,7 +264,7 @@
 
         async function loadBooks() {
             if (!gapiInited) {
-                console.error('La libreria GAPI non è ancora stata inizializzata.');
+                console.error('GAPI non è ancora pronto.');
                 return;
             }
 
@@ -304,20 +293,22 @@
         }
 
         async function fetchBooks() {
-            if (!gapi.client.sheets) {
-                console.error('La libreria Google Sheets non è stata caricata.');
+            try {
+                console.log('Richiedo i libri dal foglio Google...');
+                const range = 'libreriaprincipale!A:D';
+                const response = await gapi.client.sheets.spreadsheets.values.get({
+                    spreadsheetId: SPREADSHEET_ID,
+                    range: range,
+                });
+                return response.result.values || [];
+            } catch (error) {
+                console.error('Errore durante il recupero dei libri:', error);
                 return [];
             }
-
-            const range = 'libreriaprincipale!A:D';
-            const response = await gapi.client.sheets.spreadsheets.values.get({
-                spreadsheetId: SPREADSHEET_ID,
-                range: range,
-            });
-            return response.result.values || [];
         }
 
         function showEmailModal(type, book) {
+            console.log('Apertura del modale per', type, 'il libro:', book);
             actionType = type;
             selectedBook = book;
             document.getElementById('emailModal').style.display = 'flex';
@@ -331,60 +322,72 @@
                 return;
             }
 
-            userEmail = email;  // Salva l'email dell'utente
+            userEmail = email;
             document.getElementById('emailModal').style.display = 'none';
-            authenticateAndExecute();  // Richiede l'accesso e poi esegue l'azione
+            console.log('Email confermata:', email, 'ora procedo con l\'autenticazione.');
+            authenticateAndExecute(); 
+        }
+
+        function authenticateAndExecute() {
+            console.log('Eseguo richiesta di autenticazione.');
+            tokenClient.requestAccessToken({ prompt: '' });
         }
 
         async function bookLoan(bookTitle, userEmail) {
-    console.log('Inizio processo di prenotazione per il libro:', bookTitle, 'da parte di:', userEmail);
-    const books = await fetchBooks();
-    const bookRow = books.findIndex(book => book[0] === bookTitle);
-
-    if (books[bookRow][2] === 'Disponibile') {
-        console.log('Libro disponibile, aggiornamento in corso...');
-        try {
-            await updateBookStatus(bookRow + 1, 'Non disponibile', userEmail);
-            console.log('Stato del libro aggiornato correttamente.');
-            loadBooks();  // Ricarica i libri dopo aver aggiornato lo stato
-        } catch (error) {
-            console.error('Errore durante l\'aggiornamento del libro:', error);
-        }
-    } else {
-        alert('Questo libro è già stato preso in prestito.');
-    }
-}
-
-        async function returnBook(bookTitle, userEmail) {
+            console.log('Inizio la prenotazione del libro:', bookTitle, 'per l\'utente:', userEmail);
             const books = await fetchBooks();
             const bookRow = books.findIndex(book => book[0] === bookTitle);
 
-            if (books[bookRow][3] === userEmail) {
-                await updateBookStatus(bookRow + 1, 'Disponibile', '');
-                loadBooks();
+            if (books[bookRow][2] === 'Disponibile') {
+                try {
+                    console.log('Libro disponibile, procedo con l\'aggiornamento...');
+                    await updateBookStatus(bookRow + 1, 'Non disponibile', userEmail);
+                    console.log('Stato del libro aggiornato.');
+                    loadBooks();
+                } catch (error) {
+                    console.error('Errore durante l\'aggiornamento dello stato del libro:', error);
+                }
             } else {
-                alert('Non sei tu ad aver preso in prestito questo libro.');
+                alert('Questo libro è già stato preso in prestito.');
             }
         }
 
         async function updateBookStatus(row, status, email = '') {
-    console.log('Aggiornamento dello stato del libro sulla riga:', row);
-    try {
-        await gapi.client.sheets.spreadsheets.values.update({
-            spreadsheetId: SPREADSHEET_ID,
-            range: `libreriaprincipale!C${row}:D${row}`,
-            valueInputOption: 'USER_ENTERED',
-            resource: {
-                values: [[status, email]],
-            },
-        });
-        console.log('Aggiornamento completato.');
-    } catch (error) {
-        console.error('Errore durante l\'aggiornamento su Google Sheets:', error);
-    }
-}
+            console.log('Aggiorno lo stato del libro sulla riga:', row);
+            try {
+                await gapi.client.sheets.spreadsheets.values.update({
+                    spreadsheetId: SPREADSHEET_ID,
+                    range: `libreriaprincipale!C${row}:D${row}`,
+                    valueInputOption: 'USER_ENTERED',
+                    resource: {
+                        values: [[status, email]],
+                    },
+                });
+                console.log('Aggiornamento completato.');
+            } catch (error) {
+                console.error('Errore durante l\'aggiornamento dello stato su Google Sheets:', error);
+            }
+        }
+
+        async function returnBook(bookTitle, userEmail) {
+            console.log('Inizio la restituzione del libro:', bookTitle);
+            const books = await fetchBooks();
+            const bookRow = books.findIndex(book => book[0] === bookTitle);
+
+            if (books[bookRow][3] === userEmail) {
+                try {
+                    console.log('Procedo con l\'aggiornamento per la restituzione...');
+                    await updateBookStatus(bookRow + 1, 'Disponibile', '');
+                    console.log('Libro restituito correttamente.');
+                    loadBooks();
+                } catch (error) {
+                    console.error('Errore durante l\'aggiornamento della restituzione:', error);
+                }
+            } else {
+                alert('Non sei tu ad aver preso in prestito questo libro.');
+            }
+        }
     </script>
 </body>
 </html>
-
 
