@@ -85,7 +85,7 @@
     </div>
 
     <footer>
-        <p>Libreria Scolastica - Powered by GitHub Pages & Google Sheets</p>
+        <p>Libreria Scolastica - I.C.AltaValDiSole</p>
     </footer>
 
     <script>
@@ -121,7 +121,7 @@
 
         // Funzione per ottenere i dati dei libri
         async function fetchBooks() {
-            const range = 'Sheet1!A:D';
+            const range = 'libreriaprincipale!A:D';
             const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
             const response = await fetch(url);
             const data = await response.json();
