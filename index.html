@@ -214,6 +214,9 @@
         let gisInited = false;
         let accessToken = null;
 
+        // Log per tracciare l'inizializzazione
+        console.log("Inizio il caricamento della libreria GAPI...");
+
         function gapiLoad() {
             gapi.load('client', initializeGapiClient);
         }
@@ -224,7 +227,10 @@
                 discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
             }).then(() => {
                 gapiInited = true;
+                console.log("GAPI inizializzata correttamente.");
                 maybeEnableButtons();
+            }).catch(error => {
+                console.error("Errore durante l'inizializzazione di GAPI: ", error);
             });
         }
 
@@ -238,6 +244,7 @@
                         return;
                     }
                     accessToken = response.access_token;
+                    console.log('Token di accesso ricevuto:', accessToken);
                     if (actionType === 'prenota') {
                         bookLoan(selectedBook, userEmail);
                     } else if (actionType === 'restituisci') {
@@ -246,6 +253,7 @@
                 },
             });
             gisInited = true;
+            console.log("GIS inizializzata correttamente.");
             maybeEnableButtons();
         }
 
@@ -364,4 +372,5 @@
     </script>
 </body>
 </html>
+
 
