@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -135,15 +135,6 @@
             transform: translateY(0);
         }
 
-        #emailModal input[type="email"] {
-            width: 100%;
-            padding: 15px;
-            font-size: 16px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
-
         footer {
             text-align: center;
             padding: 20px;
@@ -187,13 +178,11 @@
         <p>Libreria Scolastica - I.C.AltaValDiSole</p>
     </footer>
 
+    <!-- Popup per accesso con Google -->
     <div id="emailModal" style="display:none;">
         <div class="modal-content">
-            <h3>Inserisci la tua email scolastica</h3>
-            <input type="email" id="emailInput" placeholder="tuaemail@icaltavaldisole.it">
-            <button onclick="submitEmail()">Conferma</button>
-            <p class="error-message" id="error-message" style="display:none;"></p>
-            <p class="success-message" id="success-message" style="display:none;"></p>
+            <h3>Per prendere in prestito un libro, accedi con l'email scolastica</h3>
+            <button onclick="authenticateAndExecute()">Accedi con Google</button>
         </div>
     </div>
 
@@ -241,9 +230,9 @@
                     accessToken = response.access_token;
                     console.log('Token di accesso ricevuto:', accessToken);
                     if (actionType === 'prenota') {
-                        bookLoan(selectedBook, userEmail);
+                        bookLoan(selectedBook);
                     } else if (actionType === 'restituisci') {
-                        returnBook(selectedBook, userEmail);
+                        returnBook(selectedBook);
                     }
                 },
             });
@@ -316,34 +305,20 @@
             modal.classList.add('active');
         }
 
-        async function submitEmail() {
-            const email = document.getElementById('emailInput').value;
-
-            if (!email.endsWith('@icaltavaldisole.it')) {
-                alert('Devi usare una email @icaltavaldisole.it');
-                return;
-            }
-
-            userEmail = email;
-            document.getElementById('emailModal').style.display = 'none';
-            console.log('Email confermata:', email, 'ora procedo con l\'autenticazione.');
-            authenticateAndExecute(); 
-        }
-
         function authenticateAndExecute() {
             console.log('Eseguo richiesta di autenticazione.');
             tokenClient.requestAccessToken({ prompt: '' });
         }
 
-        async function bookLoan(bookTitle, userEmail) {
-            console.log('Inizio la prenotazione del libro:', bookTitle, 'per l\'utente:', userEmail);
+        async function bookLoan(bookTitle) {
+            console.log('Inizio la prenotazione del libro:', bookTitle);
             const books = await fetchBooks();
             const bookRow = books.findIndex(book => book[0] === bookTitle);
 
             if (books[bookRow][2] === 'Disponibile') {
                 try {
                     console.log('Libro disponibile, procedo con l\'aggiornamento...');
-                    await updateBookStatus(bookRow + 1, 'Non disponibile', userEmail);
+                    await updateBookStatus(bookRow + 1, 'Non disponibile');
                     console.log('Stato del libro aggiornato.');
                     loadBooks();
                 } catch (error) {
@@ -368,25 +343,6 @@
                 console.log('Aggiornamento completato.');
             } catch (error) {
                 console.error('Errore durante l\'aggiornamento dello stato su Google Sheets:', error);
-            }
-        }
-
-        async function returnBook(bookTitle, userEmail) {
-            console.log('Inizio la restituzione del libro:', bookTitle);
-            const books = await fetchBooks();
-            const bookRow = books.findIndex(book => book[0] === bookTitle);
-
-            if (books[bookRow][3] === userEmail) {
-                try {
-                    console.log('Procedo con l\'aggiornamento per la restituzione...');
-                    await updateBookStatus(bookRow + 1, 'Disponibile', '');
-                    console.log('Libro restituito correttamente.');
-                    loadBooks();
-                } catch (error) {
-                    console.error('Errore durante l\'aggiornamento della restituzione:', error);
-                }
-            } else {
-                alert('Non sei tu ad aver preso in prestito questo libro.');
             }
         }
     </script>
