@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Libreria Scolastica con OAuth</title>
     <style>
+        /* Stili generali */
         body {
             font-family: 'Montserrat', sans-serif;
             margin: 0;
@@ -115,7 +116,7 @@
         #emailModal.active {
             opacity: 1;
             visibility: visible;
-             display: flex !important;
+            display: flex !important;
         }
 
         #emailModal .modal-content {
@@ -263,36 +264,11 @@
             gisLoad();
         });
 
-        // Quando viene caricato il libro, assegna la funzione di apertura del modale
-async function loadBooks() {
-    const books = await fetchBooks();
-    const tableBody = document.getElementById('booksTable').getElementsByTagName('tbody')[0];
-    tableBody.innerHTML = ''; // Pulisce la tabella
-
-    books.forEach((book, index) => {
-        const row = tableBody.insertRow();
-        row.insertCell(0).textContent = book[0]; // Titolo
-        row.insertCell(1).textContent = book[1]; // Autore
-        row.insertCell(2).textContent = book[2]; // Stato
-
-        const actionsCell = row.insertCell(3);
-        if (book[2] === 'Disponibile') {
-            const button = document.createElement('button');
-            button.textContent = 'Prendi in prestito';
-            button.onclick = () => showEmailModal('prenota', book[0]);  // Aggiunge il click handler
-            actionsCell.appendChild(button);
-        } else {
-            const button = document.createElement('button');
-            button.textContent = 'Restituisci';
-            button.onclick = () => showEmailModal('restituisci', book[0]);  // Aggiunge il click handler
-            actionsCell.appendChild(button);
-        }
-    });
-}
-
-            const books = await fetchBooks();
+        async function loadBooks() {
+            const books = await fetchBooks();  // Fetch async books
             const tableBody = document.getElementById('booksTable').getElementsByTagName('tbody')[0];
             tableBody.innerHTML = ''; // Pulisce la tabella
+
             books.forEach((book, index) => {
                 const row = tableBody.insertRow();
                 row.insertCell(0).textContent = book[0]; // Titolo
@@ -303,12 +279,12 @@ async function loadBooks() {
                 if (book[2] === 'Disponibile') {
                     const button = document.createElement('button');
                     button.textContent = 'Prendi in prestito';
-                    button.onclick = () => showEmailModal('prenota', book[0]);
+                    button.onclick = () => showEmailModal('prenota', book[0]);  // Click handler
                     actionsCell.appendChild(button);
                 } else {
                     const button = document.createElement('button');
                     button.textContent = 'Restituisci';
-                    button.onclick = () => showEmailModal('restituisci', book[0]);
+                    button.onclick = () => showEmailModal('restituisci', book[0]);  // Click handler
                     actionsCell.appendChild(button);
                 }
             });
@@ -330,18 +306,15 @@ async function loadBooks() {
         }
 
         function showEmailModal(type, book) {
-    console.log('Apertura del modale per', type, 'il libro:', book);
-    actionType = type;
-    selectedBook = book;
-    
-    // Apre il modale
-    const modal = document.getElementById('emailModal');
-    modal.style.display = 'flex';
-    modal.classList.add('active');
-    
-    // Forza la visibilità del modale e registra il log
-    console.log('Modale aperto:', modal.style.display);
-}
+            console.log('Apertura del modale per', type, 'il libro:', book);
+            actionType = type;
+            selectedBook = book;
+            
+            // Apre il modale
+            const modal = document.getElementById('emailModal');
+            modal.style.display = 'flex';
+            modal.classList.add('active');
+        }
 
         async function submitEmail() {
             const email = document.getElementById('emailInput').value;
