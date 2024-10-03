@@ -285,12 +285,15 @@ footer {
             }
         }
 
-        function authenticateAndExecute(func) {
-            if (tokenClient) {
-                tokenClient.requestAccessToken();
-            }
-            func();
-        }
+       function authenticateAndExecute(func) {
+    if (!tokenClient) {
+        console.error("Token Client non inizializzato correttamente.");
+        return;
+    }
+    tokenClient.requestAccessToken();
+    func();
+}
+
 
         document.addEventListener('DOMContentLoaded', function() {
             gapiLoad();
@@ -324,14 +327,21 @@ footer {
             });
         }
 
-        async function fetchBooks() {
-            const range = 'libreriaprincipale!A:D';
-            const response = await gapi.client.sheets.spreadsheets.values.get({
-                spreadsheetId: SPREADSHEET_ID,
-                range: range,
-            });
-            return response.result.values || [];
-        }
+     async function fetchBooks() {
+    const range = 'libreriaprincipale!A:D';
+    try {
+        const response = await gapi.client.sheets.spreadsheets.values.get({
+            spreadsheetId: SPREADSHEET_ID,
+            range: range,
+        });
+        console.log("Dati ricevuti:", response.result.values);  // Log dei dati ricevuti
+        return response.result.values || [];
+    } catch (error) {
+        console.error("Errore nel caricamento dei libri:", error);  // Log di eventuali errori
+        return [];
+    }
+}
+
 
         function showEmailModal(type, book) {
             actionType = type;
