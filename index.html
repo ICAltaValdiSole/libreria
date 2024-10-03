@@ -45,20 +45,21 @@
         }
 
         function fetchBooks() {
-            gapi.client.sheets.spreadsheets.values.get({
-                spreadsheetId: '1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ',
-                range: 'libreriaprincipale',
-            }).then((response) => {
-                var range = response.result;
-                if (range.values.length > 0) {
-                    displayBooks(range.values);
-                } else {
-                    console.log('No data found.');
-                }
-            }, function(response) {
-                console.log('Error: ' + response.result.error.message);
-            });
+        gapi.client.sheets.spreadsheets.values.get({
+        spreadsheetId: '1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ',
+        range: 'libreriaprincipale!A2:B',  // Nome del foglio aggiornato
+    }).then((response) => {
+        var range = response.result;
+        if (range.values.length > 0) {
+            displayBooks(range.values);
+        } else {
+            console.log('No data found.');
         }
+    }, function(response) {
+        console.log('Error: ' + response.result.error.message);
+    });
+}
+
 
         function displayBooks(books) {
             const booksContainer = document.getElementById('libri');
