@@ -263,11 +263,32 @@
             gisLoad();
         });
 
-        async function loadBooks() {
-            if (!gapiInited) {
-                console.error('GAPI non è ancora pronto.');
-                return;
-            }
+        // Quando viene caricato il libro, assegna la funzione di apertura del modale
+async function loadBooks() {
+    const books = await fetchBooks();
+    const tableBody = document.getElementById('booksTable').getElementsByTagName('tbody')[0];
+    tableBody.innerHTML = ''; // Pulisce la tabella
+
+    books.forEach((book, index) => {
+        const row = tableBody.insertRow();
+        row.insertCell(0).textContent = book[0]; // Titolo
+        row.insertCell(1).textContent = book[1]; // Autore
+        row.insertCell(2).textContent = book[2]; // Stato
+
+        const actionsCell = row.insertCell(3);
+        if (book[2] === 'Disponibile') {
+            const button = document.createElement('button');
+            button.textContent = 'Prendi in prestito';
+            button.onclick = () => showEmailModal('prenota', book[0]);  // Aggiunge il click handler
+            actionsCell.appendChild(button);
+        } else {
+            const button = document.createElement('button');
+            button.textContent = 'Restituisci';
+            button.onclick = () => showEmailModal('restituisci', book[0]);  // Aggiunge il click handler
+            actionsCell.appendChild(button);
+        }
+    });
+}
 
             const books = await fetchBooks();
             const tableBody = document.getElementById('booksTable').getElementsByTagName('tbody')[0];
@@ -316,6 +337,7 @@
     // Apre il modale
     const modal = document.getElementById('emailModal');
     modal.style.display = 'flex';
+    modal.classList.add('active');
     
     // Forza la visibilità del modale e registra il log
     console.log('Modale aperto:', modal.style.display);
