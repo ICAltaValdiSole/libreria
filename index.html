@@ -203,7 +203,6 @@
         let gisInited = false;
         let accessToken = null;
 
-        // Carica la libreria GAPI e GIS per OAuth
         function gapiLoad() {
             gapi.load('client', initializeGapiClient);
         }
@@ -214,7 +213,6 @@
                 discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
             }).then(() => {
                 gapiInited = true;
-                maybeEnableButtons();
             });
         }
 
@@ -228,55 +226,48 @@
                         return;
                     }
                     accessToken = response.access_token;
-                    loadBooks();  // Chiama la funzione per caricare i libri solo dopo aver ottenuto l'access token
+                    if (actionType === 'prenota') {
+                        bookLoan(selectedBook, userEmail);
+                    } else if (actionType === 'restituisci') {
+                        returnBook(selectedBook, userEmail);
+                    }
                 },
             });
             gisInited = true;
         }
 
-        function maybeEnableButtons() {
-            if (gapiInited && gisInited) {
-                loadBooks();  // Solo quando OAuth e GAPI sono pronti
-            }
-        }
-
-        function authenticateAndExecute(func) {
-            if (!accessToken) {
-                tokenClient.requestAccessToken({ prompt: '' });
-            } else {
-                func();
-            }
+        function authenticateAndExecute() {
+            tokenClient.requestAccessToken({ prompt: '' });
         }
 
         document.addEventListener('DOMContentLoaded', function() {
             gapiLoad();
             gisLoad();
+            loadBooks();
         });
 
         async function loadBooks() {
-            authenticateAndExecute(async () => {
-                const books = await fetchBooks();
-                const tableBody = document.getElementById('booksTable').getElementsByTagName('tbody')[0];
-                tableBody.innerHTML = ''; // Pulisce la tabella
-                books.forEach((book, index) => {
-                    const row = tableBody.insertRow();
-                    row.insertCell(0).textContent = book[0]; // Titolo
-                    row.insertCell(1).textContent = book[1]; // Autore
-                    row.insertCell(2).textContent = book[2]; // Stato
+            const books = await fetchBooks();
+            const tableBody = document.getElementById('booksTable').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = ''; // Pulisce la tabella
+            books.forEach((book, index) => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = book[0]; // Titolo
+                row.insertCell(1).textContent = book[1]; // Autore
+                row.insertCell(2).textContent = book[2]; // Stato
 
-                    const actionsCell = row.insertCell(3);
-                    if (book[2] === 'Disponibile') {
-                        const button = document.createElement('button');
-                        button.textContent = 'Prenota';
-                        button.onclick = () => showEmailModal('prenota', book[0]);
-                        actionsCell.appendChild(button);
-                    } else {
-                        const button = document.createElement('button');
-                        button.textContent = 'Restituisci';
-                        button.onclick = () => showEmailModal('restituisci', book[0]);
-                        actionsCell.appendChild(button);
-                    }
-                });
+                const actionsCell = row.insertCell(3);
+                if (book[2] === 'Disponibile') {
+                    const button = document.createElement('button');
+                    button.textContent = 'Prendi in prestito';
+                    button.onclick = () => showEmailModal('prenota', book[0]);
+                    actionsCell.appendChild(button);
+                } else {
+                    const button = document.createElement('button');
+                    button.textContent = 'Restituisci';
+                    button.onclick = () => showEmailModal('restituisci', book[0]);
+                    actionsCell.appendChild(button);
+                }
             });
         }
 
@@ -303,13 +294,9 @@
                 return;
             }
 
-            if (actionType === 'prenota') {
-                await bookLoan(selectedBook, email);
-            } else if (actionType === 'restituisci') {
-                await returnBook(selectedBook, email);
-            }
-
+            userEmail = email;  // Salva l'email dell'utente
             document.getElementById('emailModal').style.display = 'none';
+            authenticateAndExecute();  // Richiede l'accesso e poi esegue l'azione
         }
 
         async function bookLoan(bookTitle, userEmail) {
