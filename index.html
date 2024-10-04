@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -198,6 +198,7 @@
         let accessToken = null;
         let actionType = '';
         let selectedBook = '';
+        let userEmail = '';
 
         function gapiLoad() {
             console.log('Inizio il caricamento di GAPI...');
@@ -228,12 +229,18 @@
                         return;
                     }
                     accessToken = response.access_token;
+                    userEmail = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getEmail();
                     console.log('Token di accesso ricevuto:', accessToken);
+                    console.log('Email autenticata:', userEmail);
+                    
                     if (actionType === 'prenota') {
-                        bookLoan(selectedBook);
+                        bookLoan(selectedBook, userEmail);
                     } else if (actionType === 'restituisci') {
-                        returnBook(selectedBook);
+                        returnBook(selectedBook, userEmail);
                     }
+
+                    // Chiudi il modale
+                    document.getElementById('emailModal').style.display = 'none';
                 },
             });
             gisInited = true;
@@ -254,7 +261,7 @@
         });
 
         async function loadBooks() {
-            const books = await fetchBooks();  // Fetch async books
+            const books = await fetchBooks();
             const tableBody = document.getElementById('booksTable').getElementsByTagName('tbody')[0];
             tableBody.innerHTML = ''; // Pulisce la tabella
 
@@ -310,7 +317,7 @@
             tokenClient.requestAccessToken({ prompt: '' });
         }
 
-        async function bookLoan(bookTitle) {
+        async function bookLoan(bookTitle, userEmail) {
             console.log('Inizio la prenotazione del libro:', bookTitle);
             const books = await fetchBooks();
             const bookRow = books.findIndex(book => book[0] === bookTitle);
@@ -318,7 +325,7 @@
             if (books[bookRow][2] === 'Disponibile') {
                 try {
                     console.log('Libro disponibile, procedo con l\'aggiornamento...');
-                    await updateBookStatus(bookRow + 1, 'Non disponibile');
+                    await updateBookStatus(bookRow + 1, 'Non disponibile', userEmail);
                     console.log('Stato del libro aggiornato.');
                     loadBooks();
                 } catch (error) {
@@ -348,4 +355,3 @@
     </script>
 </body>
 </html>
-
