@@ -2,6 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://apis.google.com">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Libreria Scolastica</title>
     <style>
@@ -252,7 +253,8 @@
 
         // Funzione di autenticazione e controllo email
         function authenticateAndLoad() {
-            tokenClient.requestAccessToken();
+           tokenClient.requestAccessToken({ prompt: '' });
+
         }
 
         function handleCredentialResponse(response) {
