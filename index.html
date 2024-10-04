@@ -11,6 +11,7 @@
             padding: 0;
             background-color: #fafafa;
             color: #333;
+            transition: background-color 0.4s ease;
         }
 
         .container {
@@ -20,6 +21,7 @@
             padding: 30px;
             box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.1);
             border-radius: 12px;
+            transition: box-shadow 0.3s ease;
         }
 
         header {
@@ -30,12 +32,15 @@
             padding: 60px 0;
             text-align: center;
             font-size: 40px;
+            letter-spacing: 1px;
             font-weight: bold;
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
         }
 
         header p {
             font-size: 18px;
+            margin-top: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
         }
 
         table {
@@ -67,6 +72,7 @@
 
         tr:hover {
             background-color: #f1f1f1;
+            transition: background-color 0.3s ease;
         }
 
         button {
@@ -77,17 +83,22 @@
             cursor: pointer;
             font-size: 14px;
             border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         button:hover {
             background-color: #546e7a;
+            transform: translateY(-3px);
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
         }
 
         button:disabled {
             background-color: grey;
+            cursor: not-allowed;
         }
 
-        #loginModal, #actionModal {
+        /* Modal per il login */
+        #loginModal {
             display: none;
             position: fixed;
             top: 0;
@@ -99,22 +110,49 @@
             align-items: center;
         }
 
-        .modal-content {
+        #loginModal .modal-content {
             background-color: white;
             padding: 40px;
             border-radius: 12px;
             max-width: 400px;
             width: 90%;
             text-align: center;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
         }
 
-        .modal-content input[type="text"], .modal-content input[type="email"], .modal-content input[type="date"], .modal-content input[type="password"] {
+        #loginModal button {
+            margin-top: 20px;
+        }
+
+        /* Modal per azioni (prestito/consegna) */
+        #actionModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        #actionModal .modal-content {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        #actionModal input {
             width: 100%;
             padding: 15px;
-            font-size: 16px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
+            margin-bottom: 10px;
             border-radius: 8px;
+            border: 1px solid #ddd;
         }
 
         footer {
@@ -123,6 +161,8 @@
             background-color: #607d8b;
             color: white;
             font-size: 14px;
+            width: 100%;
+            border-top: 1px solid #ddd;
         }
     </style>
     <script src="https://apis.google.com/js/api.js"></script>
@@ -135,7 +175,14 @@
         <p>I.C. Alta Val di Sole</p>
     </header>
 
-    <div class="container">
+    <div id="loginModal" style="display: flex;">
+        <div class="modal-content">
+            <h3>Sei il responsabile? Accedi con Google</h3>
+            <button onclick="authenticateAndLoad()">Accedi con Google</button>
+        </div>
+    </div>
+
+    <div class="container" id="libraryContainer" style="display:none;">
         <h2>Elenco Libri Disponibili</h2>
         <table id="booksTable">
             <thead>
@@ -153,19 +200,8 @@
     </div>
 
     <footer>
-        <p>Libreria Scolastica - I.C.AltaValDiSole</p>
+        <p>Libreria Scolastica - I.C. Alta Val di Sole</p>
     </footer>
-
-    <!-- Modale di login -->
-    <div id="loginModal">
-        <div class="modal-content">
-            <h3>Login</h3>
-            <input type="text" id="username" placeholder="Nome utente">
-            <input type="password" id="password" placeholder="Password">
-            <button onclick="submitLogin()">Accedi</button>
-            <p class="error-message" id="loginError" style="color:red; display:none;">Credenziali errate!</p>
-        </div>
-    </div>
 
     <!-- Modale per azioni (prestito/consegna) -->
     <div id="actionModal">
@@ -182,17 +218,13 @@
     <script>
         const SPREADSHEET_ID = '1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ'; 
         const CLIENT_ID = '1010871423571-tc41gvqep2p5ump9i8sdq046vgr09kst.apps.googleusercontent.com';
-        const API_KEY = 'AIzaSyCBAMHlMKwdPs8hlvRnxxNOWwdXxqnKC3k';
         const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+        const EMAILS_AUTORIZZATE = ['email1@icaltavaldisole.it', 'email2@icaltavaldisole.it'];
 
         let libri = [];
-        let loggedIn = false;
-        let currentAction = '';
-        let currentBookIndex = null;
-        let tokenClient;
         let accessToken = null;
+        let tokenClient;
 
-        // Carica la libreria GAPI per Sheets API
         function gapiLoad() {
             gapi.load('client', initializeGapiClient);
         }
@@ -202,9 +234,9 @@
                 apiKey: API_KEY,
                 discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
             }).then(() => {
-                loadBooks();
+                console.log('API Client inizializzato');
             }).catch(error => {
-                console.error('Errore nell\'inizializzazione di GAPI:', error);
+                console.error('Errore nell\'inizializzazione dell\'API Client:', error);
             });
         }
 
@@ -212,44 +244,50 @@
             tokenClient = google.accounts.oauth2.initTokenClient({
                 client_id: CLIENT_ID,
                 scope: SCOPES,
-                callback: (response) => {
-                    if (response.error !== undefined) {
-                        console.error('Errore nell\'ottenere il token di accesso:', response.error);
-                        return;
-                    }
-                    accessToken = response.access_token;
-                    console.log('Token di accesso ricevuto:', accessToken);
-                },
+                callback: handleCredentialResponse,
             });
         }
 
-        // Funzione per richiedere l'autenticazione prima di scrivere nello Sheets
-        function authenticateAndExecute(func) {
-            if (!accessToken) {
-                tokenClient.requestAccessToken();
-            }
-            func();
+        // Funzione di autenticazione e controllo email
+        function authenticateAndLoad() {
+            tokenClient.requestAccessToken();
         }
 
-        // Funzione per recuperare i libri dallo Sheets
+        function handleCredentialResponse(response) {
+            if (response.error !== undefined) {
+                console.error('Errore nell\'ottenere il token di accesso:', response.error);
+                return;
+            }
+            accessToken = response.access_token;
+
+            gapi.client.oauth2.userinfo.get().execute(function(resp) {
+                const userEmail = resp.email;
+                if (EMAILS_AUTORIZZATE.includes(userEmail)) {
+                    document.getElementById('loginModal').style.display = 'none';
+                    document.getElementById('libraryContainer').style.display = 'block';
+                    loadBooks();
+                } else {
+                    alert('Accesso negato: questa email non è autorizzata.');
+                }
+            });
+        }
+
         async function loadBooks() {
-            const range = 'libreriaprincipale!A:D';
             try {
                 const response = await gapi.client.sheets.spreadsheets.values.get({
                     spreadsheetId: SPREADSHEET_ID,
-                    range: range,
+                    range: 'libreriaprincipale!A:D',
                 });
                 libri = response.result.values || [];
-                displayBooks();
+                updateBooksTable();
             } catch (error) {
-                console.error('Errore durante il recupero dei libri:', error);
+                console.error('Errore durante il caricamento dei libri:', error);
             }
         }
 
-        function displayBooks() {
+        function updateBooksTable() {
             const tableBody = document.getElementById('booksTable').getElementsByTagName('tbody')[0];
-            tableBody.innerHTML = '';
-
+            tableBody.innerHTML = ''; 
             libri.forEach((libro, index) => {
                 const row = tableBody.insertRow();
                 row.insertCell(0).textContent = libro[0]; 
@@ -257,67 +295,44 @@
                 row.insertCell(2).textContent = libro[2]; 
 
                 const actionsCell = row.insertCell(3);
-                const button = document.createElement('button');
-
                 if (libro[2] === 'Disponibile') {
+                    const button = document.createElement('button');
                     button.textContent = 'Prestito';
                     button.onclick = () => showActionModal('prestito', index);
+                    actionsCell.appendChild(button);
                 } else {
+                    const button = document.createElement('button');
                     button.textContent = 'Consegna';
                     button.onclick = () => showActionModal('consegna', index);
+                    actionsCell.appendChild(button);
                 }
-
-                actionsCell.appendChild(button);
             });
         }
 
-        function showActionModal(action, index) {
-            currentAction = action;
-            currentBookIndex = index;
-
-            const modalTitle = document.getElementById('modalTitle');
-            const nomeInput = document.getElementById('nome');
-            const cognomeInput = document.getElementById('cognome');
-            const emailInput = document.getElementById('emailScolastica');
-            const dataInput = document.getElementById('data');
-
-            if (action === 'prestito') {
-                modalTitle.textContent = 'Inserisci i dettagli per il prestito';
-                nomeInput.value = '';
-                cognomeInput.value = '';
-                emailInput.value = '';
-                dataInput.value = '';
-            } else if (action === 'consegna') {
-                const prestito = libri[index].prestito;
-                modalTitle.textContent = 'Conferma la riconsegna';
-                nomeInput.value = prestito.nome;
-                cognomeInput.value = prestito.cognome;
-                emailInput.value = prestito.email;
-                dataInput.value = '';
-            }
-
+        function showActionModal(type, index) {
             document.getElementById('actionModal').style.display = 'flex';
+            document.getElementById('modalTitle').textContent = type === 'prestito' ? 'Prestito Libro' : 'Consegna Libro';
+            // Salva l'indice del libro da modificare
+            document.getElementById('confirmAction').onclick = () => confirmAction(type, index);
         }
 
-        function confirmAction() {
+        function confirmAction(type, index) {
             const nome = document.getElementById('nome').value;
             const cognome = document.getElementById('cognome').value;
             const email = document.getElementById('emailScolastica').value;
             const data = document.getElementById('data').value;
 
-            if (currentAction === 'prestito') {
-                libri[currentBookIndex][2] = 'In prestito';
-                libri[currentBookIndex].prestito = { nome, cognome, email, data };
-            } else if (currentAction === 'consegna') {
-                libri[currentBookIndex][2] = 'Disponibile';
-                libri[currentBookIndex].prestito = {};
+            if (type === 'prestito') {
+                libri[index][2] = 'In prestito';
+                libri[index].prestito = { nome, cognome, email, data };
+            } else {
+                libri[index][2] = 'Disponibile';
+                libri[index].prestito = {};
             }
 
-            authenticateAndExecute(() => {
-                updateSheet(currentBookIndex, libri[currentBookIndex]); 
-                document.getElementById('actionModal').style.display = 'none';
-                loadBooks(); 
-            });
+            updateSheet(index, libri[index]);
+            document.getElementById('actionModal').style.display = 'none';
+            updateBooksTable();
         }
 
         async function updateSheet(index, libro) {
@@ -337,24 +352,11 @@
             }
         }
 
-        function submitLogin() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            if (username === 'libraio' && password === 'password123') {
-                loggedIn = true;
-                document.getElementById('loginModal').style.display = 'none';
-                loadBooks();
-            } else {
-                document.getElementById('loginError').style.display = 'block';
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', function() {
             gapiLoad();
             gisLoad();
-            document.getElementById('loginModal').style.display = 'flex';
         });
     </script>
 </body>
 </html>
+
