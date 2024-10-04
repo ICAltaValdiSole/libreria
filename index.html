@@ -2,10 +2,14 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-   <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://apis.google.com https://accounts.google.com 'nonce-yourNonceValue';">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://apis.google.com https://accounts.google.com;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Libreria Scolastica</title>
-     <style>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
+    <script src="scripts.js" defer></script>
+    <style>
         body {
             font-family: 'Montserrat', sans-serif;
             margin: 0;
@@ -166,12 +170,8 @@
             border-top: 1px solid #ddd;
         }
     </style>
-    <script src="https://apis.google.com/js/api.js"></script>
-    <script src="https://accounts.google.com/gsi/client"></script>
-    <script nonce="yourNonceValue"> console.log('Questo è uno script sicuro.');</script>
 </head>
 <body>
-
     <header>
         <h1>Libreria Scolastica</h1>
         <p>I.C. Alta Val di Sole</p>
@@ -196,7 +196,7 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Libri caricati -->
+                <!-- Qui verranno aggiunti dinamicamente i libri tramite JavaScript -->
             </tbody>
         </table>
     </div>
@@ -206,91 +206,18 @@
     </footer>
 
     <!-- Modale per azioni (prestito/consegna) -->
-    <div id="actionModal">
+    <div id="actionModal" style="display: none;">
         <div class="modal-content">
             <h3 id="modalTitle"></h3>
             <input type="text" id="nome" placeholder="Nome" required>
             <input type="text" id="cognome" placeholder="Cognome" required>
             <input type="email" id="emailScolastica" placeholder="Email Scolastica" required>
             <input type="date" id="data" required>
-            <button id="confirmAction" onclick="confirmAction()">Conferma</button>
+            <button id="confirmAction">Conferma</button>
         </div>
     </div>
-
-    <script>
-        const CLIENT_ID = '1010871423571-tc41gvqep2p5ump9i8sdq046vgr09kst.apps.googleusercontent.com';
-        const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
-        const EMAILS_AUTORIZZATE = ['tecnico@icaltavaldisole.it', 'email2@icaltavaldisole.it'];
-
-        function onSignIn(googleUser) {
-            var profile = googleUser.getBasicProfile();
-            const userEmail = profile.getEmail();
-            if (EMAILS_AUTORIZZATE.includes(userEmail)) {
-                document.getElementById('loginModal').style.display = 'none';
-                document.getElementById('libraryContainer').style.display = 'block';
-                loadBooks();
-            } else {
-                alert('Accesso negato: questa email non è autorizzata.');
-            }
-        }
-
-        async function loadBooks() {
-            try {
-                const response = await gapi.client.sheets.spreadsheets.values.get({
-                    spreadsheetId: '1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ',
-                    range: 'libreriaprincipale!A:D',
-                });
-                libri = response.result.values || [];
-                updateBooksTable();
-            } catch (error) {
-                console.error('Errore durante il caricamento dei libri:', error);
-            }
-        }
-
-        function updateBooksTable() {
-            const tableBody = document.getElementById('booksTable').getElementsByTagName('tbody')[0];
-            tableBody.innerHTML = '';
-            libri.forEach((libro, index) => {
-                const row = tableBody.insertRow();
-                row.insertCell(0).textContent = libro[0];
-                row.insertCell(1).textContent = libro[1];
-                row.insertCell(2).textContent = libro[2];
-
-                const actionsCell = row.insertCell(3);
-                const button = document.createElement('button');
-                button.textContent = libro[2] === 'Disponibile' ? 'Prestito' : 'Consegna';
-                button.onclick = () => showActionModal(libro[2] === 'Disponibile' ? 'prestito' : 'consegna', index);
-                actionsCell.appendChild(button);
-            });
-        }
-
-        function showActionModal(type, index) {
-            document.getElementById('actionModal').style.display = 'flex';
-            document.getElementById('modalTitle').textContent = type === 'prestito' ? 'Prestito Libro' : 'Consegna Libro';
-            document.getElementById('confirmAction').onclick = () => confirmAction(type, index);
-        }
-
-        function confirmAction(type, index) {
-            const nome = document.getElementById('nome').value;
-            const cognome = document.getElementById('cognome').value;
-            const email = document.getElementById('emailScolastica').value;
-            const data = document.getElementById('data').value;
-
-            // Logica per aggiornare lo stato del libro
-            console.log('Azione confermata:', type, nome, cognome, email, data);
-            // Aggiorna la UI e potenzialmente il backend/spreadsheet
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            gapi.load('auth2', function() {
-                gapi.auth2.init({
-                    client_id: CLIENT_ID,
-                    scope: SCOPES,
-                });
-            });
-        });
-    </script>
 </body>
 </html>
+
 
 
