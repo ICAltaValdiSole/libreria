@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Libreria Scolastica con OAuth</title>
+    <title>Libreria Scolastica</title>
     <style>
-        /* Stili generali */
         body {
             font-family: 'Montserrat', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #fafafa;
             color: #333;
-            transition: background-color 0.4s ease;
         }
 
         .container {
@@ -22,7 +20,6 @@
             padding: 30px;
             box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.1);
             border-radius: 12px;
-            transition: box-shadow 0.3s ease;
         }
 
         header {
@@ -33,15 +30,12 @@
             padding: 60px 0;
             text-align: center;
             font-size: 40px;
-            letter-spacing: 1px;
             font-weight: bold;
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
         }
 
         header p {
             font-size: 18px;
-            margin-top: 10px;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
         }
 
         table {
@@ -73,7 +67,6 @@
 
         tr:hover {
             background-color: #f1f1f1;
-            transition: background-color 0.3s ease;
         }
 
         button {
@@ -84,21 +77,17 @@
             cursor: pointer;
             font-size: 14px;
             border-radius: 8px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         button:hover {
             background-color: #546e7a;
-            transform: translateY(-3px);
-            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
         }
 
         button:disabled {
             background-color: grey;
-            cursor: not-allowed;
         }
 
-        #emailModal {
+        #loginModal, #actionModal {
             display: none;
             position: fixed;
             top: 0;
@@ -108,31 +97,24 @@
             background: rgba(0, 0, 0, 0.6);
             justify-content: center;
             align-items: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.4s ease, visibility 0.4s;
         }
 
-        #emailModal.active {
-            opacity: 1;
-            visibility: visible;
-            display: flex !important;
-        }
-
-        #emailModal .modal-content {
+        .modal-content {
             background-color: white;
             padding: 40px;
             border-radius: 12px;
             max-width: 400px;
             width: 90%;
             text-align: center;
-            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
-            transform: translateY(-50px);
-            transition: transform 0.4s ease;
         }
 
-        #emailModal.active .modal-content {
-            transform: translateY(0);
+        .modal-content input[type="text"], .modal-content input[type="email"], .modal-content input[type="date"], .modal-content input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
         }
 
         footer {
@@ -141,17 +123,12 @@
             background-color: #607d8b;
             color: white;
             font-size: 14px;
-            position: relative;
-            bottom: 0;
-            width: 100%;
-            border-top: 1px solid #ddd;
-            transition: background-color 0.3s ease;
         }
     </style>
     <script src="https://apis.google.com/js/api.js"></script>
-    <script src="https://accounts.google.com/gsi/client"></script>
 </head>
 <body>
+
     <header>
         <h1>Libreria Scolastica</h1>
         <p>I.C. Alta Val di Sole</p>
@@ -169,7 +146,7 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Libri verranno inseriti qui -->
+                <!-- I libri verranno caricati qui -->
             </tbody>
         </table>
     </div>
@@ -178,30 +155,39 @@
         <p>Libreria Scolastica - I.C.AltaValDiSole</p>
     </footer>
 
-    <!-- Popup per accesso con Google -->
-    <div id="emailModal" style="display:none;">
+    <!-- Modale di login -->
+    <div id="loginModal">
         <div class="modal-content">
-            <h3>Per prendere in prestito un libro, accedi con l'email scolastica</h3>
-            <button onclick="authenticateAndExecute()">Accedi con Google</button>
+            <h3>Login</h3>
+            <input type="text" id="username" placeholder="Nome utente">
+            <input type="password" id="password" placeholder="Password">
+            <button onclick="submitLogin()">Accedi</button>
+            <p class="error-message" id="loginError" style="color:red; display:none;">Credenziali errate!</p>
+        </div>
+    </div>
+
+    <!-- Modale per azioni (prestito/consegna) -->
+    <div id="actionModal">
+        <div class="modal-content">
+            <h3 id="modalTitle"></h3>
+            <input type="text" id="nome" placeholder="Nome" required>
+            <input type="text" id="cognome" placeholder="Cognome" required>
+            <input type="email" id="emailScolastica" placeholder="Email Scolastica" required>
+            <input type="date" id="data" required>
+            <button id="confirmAction" onclick="confirmAction()">Conferma</button>
         </div>
     </div>
 
     <script>
-        const SPREADSHEET_ID = '1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ';
-        const CLIENT_ID = '1010871423571-0qhua7brqmrb73mee53fnnhiqus6ibeh.apps.googleusercontent.com';
+        const SPREADSHEET_ID = '1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ'; // ID del tuo Google Sheet
         const API_KEY = 'AIzaSyCBAMHlMKwdPs8hlvRnxxNOWwdXxqnKC3k';
-        const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+        let libri = []; // Array per contenere i libri
+        let loggedIn = false;
+        let currentAction = ''; // 'prestito' o 'consegna'
+        let currentBookIndex = null;
 
-        let tokenClient;
-        let gapiInited = false;
-        let gisInited = false;
-        let accessToken = null;
-        let actionType = '';
-        let selectedBook = '';
-        let userEmail = '';
-
+        // Caricamento della libreria GAPI per Sheets API
         function gapiLoad() {
-            console.log('Inizio il caricamento di GAPI...');
             gapi.load('client', initializeGapiClient);
         }
 
@@ -210,148 +196,140 @@
                 apiKey: API_KEY,
                 discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
             }).then(() => {
-                gapiInited = true;
-                console.log("GAPI è stato inizializzato correttamente.");
-                maybeEnableButtons();
-            }).catch(error => {
-                console.error("Errore nell'inizializzazione di GAPI: ", error);
-            });
-        }
-
-        function gisLoad() {
-            console.log('Inizio il caricamento di GIS...');
-            tokenClient = google.accounts.oauth2.initTokenClient({
-                client_id: CLIENT_ID,
-                scope: SCOPES,
-                callback: (response) => {
-                    if (response.error !== undefined) {
-                        console.error('Errore nell\'ottenere il token di accesso:', response.error);
-                        return;
-                    }
-                    accessToken = response.access_token;
-                    userEmail = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getEmail();
-                    console.log('Token di accesso ricevuto:', accessToken);
-                    console.log('Email autenticata:', userEmail);
-                    
-                    if (actionType === 'prenota') {
-                        bookLoan(selectedBook, userEmail);
-                    } else if (actionType === 'restituisci') {
-                        returnBook(selectedBook, userEmail);
-                    }
-
-                    // Chiudi il modale
-                    document.getElementById('emailModal').style.display = 'none';
-                },
-            });
-            gisInited = true;
-            console.log("GIS è stato inizializzato correttamente.");
-            maybeEnableButtons();
-        }
-
-        function maybeEnableButtons() {
-            if (gapiInited && gisInited) {
-                console.log('Entrambe le librerie sono pronte, carico i libri...');
                 loadBooks();
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            gapiLoad();
-            gisLoad();
-        });
-
-        async function loadBooks() {
-            const books = await fetchBooks();
-            const tableBody = document.getElementById('booksTable').getElementsByTagName('tbody')[0];
-            tableBody.innerHTML = ''; // Pulisce la tabella
-
-            books.forEach((book, index) => {
-                const row = tableBody.insertRow();
-                row.insertCell(0).textContent = book[0]; // Titolo
-                row.insertCell(1).textContent = book[1]; // Autore
-                row.insertCell(2).textContent = book[2]; // Stato
-
-                const actionsCell = row.insertCell(3);
-                if (book[2] === 'Disponibile') {
-                    const button = document.createElement('button');
-                    button.textContent = 'Prendi in prestito';
-                    button.onclick = () => showEmailModal('prenota', book[0]);  // Click handler
-                    actionsCell.appendChild(button);
-                } else {
-                    const button = document.createElement('button');
-                    button.textContent = 'Restituisci';
-                    button.onclick = () => showEmailModal('restituisci', book[0]);  // Click handler
-                    actionsCell.appendChild(button);
-                }
+            }).catch(error => {
+                console.error('Errore nell\'inizializzazione di GAPI:', error);
             });
         }
 
-        async function fetchBooks() {
+        // Funzione per recuperare i libri dallo Sheets
+        async function loadBooks() {
+            const range = 'libreriaprincipale!A:D';
             try {
-                console.log('Richiedo i libri dal foglio Google...');
-                const range = 'libreriaprincipale!A:D';
                 const response = await gapi.client.sheets.spreadsheets.values.get({
                     spreadsheetId: SPREADSHEET_ID,
                     range: range,
                 });
-                return response.result.values || [];
+                libri = response.result.values || [];
+                displayBooks();
             } catch (error) {
                 console.error('Errore durante il recupero dei libri:', error);
-                return [];
             }
         }
 
-        function showEmailModal(type, book) {
-            console.log('Apertura del modale per', type, 'il libro:', book);
-            actionType = type;
-            selectedBook = book;
-            
-            // Apre il modale
-            const modal = document.getElementById('emailModal');
-            modal.style.display = 'flex';
-            modal.classList.add('active');
-        }
+        // Mostra i libri nella tabella
+        function displayBooks() {
+            const tableBody = document.getElementById('booksTable').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = '';
 
-        function authenticateAndExecute() {
-            console.log('Eseguo richiesta di autenticazione.');
-            tokenClient.requestAccessToken({ prompt: '' });
-        }
+            libri.forEach((libro, index) => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = libro[0]; // Titolo
+                row.insertCell(1).textContent = libro[1]; // Autore
+                row.insertCell(2).textContent = libro[2]; // Stato
 
-        async function bookLoan(bookTitle, userEmail) {
-            console.log('Inizio la prenotazione del libro:', bookTitle);
-            const books = await fetchBooks();
-            const bookRow = books.findIndex(book => book[0] === bookTitle);
+                const actionsCell = row.insertCell(3);
+                const button = document.createElement('button');
 
-            if (books[bookRow][2] === 'Disponibile') {
-                try {
-                    console.log('Libro disponibile, procedo con l\'aggiornamento...');
-                    await updateBookStatus(bookRow + 1, 'Non disponibile', userEmail);
-                    console.log('Stato del libro aggiornato.');
-                    loadBooks();
-                } catch (error) {
-                    console.error('Errore durante l\'aggiornamento dello stato del libro:', error);
+                if (libro[2] === 'Disponibile') {
+                    button.textContent = 'Prestito';
+                    button.onclick = () => showActionModal('prestito', index);
+                } else {
+                    button.textContent = 'Consegna';
+                    button.onclick = () => showActionModal('consegna', index);
                 }
-            } else {
-                alert('Questo libro è già stato preso in prestito.');
-            }
+
+                actionsCell.appendChild(button);
+            });
         }
 
-        async function updateBookStatus(row, status, email = '') {
-            console.log('Aggiorno lo stato del libro sulla riga:', row);
+        // Mostra il modale per prestito o consegna
+        function showActionModal(action, index) {
+            currentAction = action;
+            currentBookIndex = index;
+
+            const modalTitle = document.getElementById('modalTitle');
+            const nomeInput = document.getElementById('nome');
+            const cognomeInput = document.getElementById('cognome');
+            const emailInput = document.getElementById('emailScolastica');
+            const dataInput = document.getElementById('data');
+
+            if (action === 'prestito') {
+                modalTitle.textContent = 'Inserisci i dettagli per il prestito';
+                nomeInput.value = '';
+                cognomeInput.value = '';
+                emailInput.value = '';
+                dataInput.value = '';
+            } else if (action === 'consegna') {
+                const prestito = libri[index].prestito;
+                modalTitle.textContent = 'Conferma la riconsegna';
+                nomeInput.value = prestito.nome;
+                cognomeInput.value = prestito.cognome;
+                emailInput.value = prestito.email;
+                dataInput.value = '';
+            }
+
+            document.getElementById('actionModal').style.display = 'flex';
+        }
+
+        // Conferma l'azione (prestito o consegna)
+        function confirmAction() {
+            const nome = document.getElementById('nome').value;
+            const cognome = document.getElementById('cognome').value;
+            const email = document.getElementById('emailScolastica').value;
+            const data = document.getElementById('data').value;
+
+            if (currentAction === 'prestito') {
+                libri[currentBookIndex][2] = 'In prestito';
+                libri[currentBookIndex].prestito = { nome, cognome, email, data };
+            } else if (currentAction === 'consegna') {
+                libri[currentBookIndex][2] = 'Disponibile';
+                libri[currentBookIndex].prestito = {};
+            }
+
+            updateSheet(currentBookIndex, libri[currentBookIndex]); // Aggiorna lo Sheets
+            document.getElementById('actionModal').style.display = 'none';
+            loadBooks(); // Ricarica la tabella
+        }
+
+        // Aggiorna Google Sheets con il nuovo stato del libro
+        async function updateSheet(index, libro) {
+            const range = `libreriaprincipale!A${index + 1}:D${index + 1}`;
             try {
                 await gapi.client.sheets.spreadsheets.values.update({
                     spreadsheetId: SPREADSHEET_ID,
-                    range: `libreriaprincipale!C${row}:D${row}`,
+                    range: range,
                     valueInputOption: 'USER_ENTERED',
                     resource: {
-                        values: [[status, email]],
+                        values: [[libro[0], libro[1], libro[2], `${libro.prestito.nome || ''}, ${libro.prestito.cognome || ''}, ${libro.prestito.email || ''}, ${libro.prestito.data || ''}`]],
                     },
                 });
-                console.log('Aggiornamento completato.');
+                console.log('Foglio aggiornato.');
             } catch (error) {
-                console.error('Errore durante l\'aggiornamento dello stato su Google Sheets:', error);
+                console.error('Errore durante l\'aggiornamento dello Sheets:', error);
             }
         }
+
+        // Login
+        function submitLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === 'libraio' && password === 'password123') {
+                loggedIn = true;
+                document.getElementById('loginModal').style.display = 'none';
+                loadBooks();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        // Mostra il modale di login quando la pagina viene caricata
+        document.addEventListener('DOMContentLoaded', function() {
+            gapiLoad();
+            document.getElementById('loginModal').style.display = 'flex';
+        });
     </script>
+
 </body>
 </html>
