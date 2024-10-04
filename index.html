@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://apis.google.com https://accounts.google.com 'unsafe-inline'; connect-src 'self' https://oauth2.googleapis.com; frame-src https://accounts.google.com https://content-sheets.googleapis.com;">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://apis.google.com https://accounts.google.com; connect-src 'self' https://oauth2.googleapis.com; frame-src https://accounts.google.com https://content-sheets.googleapis.com;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Libreria Scolastica</title>
      <style>
@@ -179,7 +179,7 @@
     <div id="loginModal" style="display: flex;">
         <div class="modal-content">
             <h3>Sei il responsabile? Accedi con Google</h3>
-            <button onclick="authenticateAndLoad()">Accedi con Google</button>
+            <div class="g-signin2" data-onsuccess="onSignIn"></div>
         </div>
     </div>
 
@@ -217,89 +217,26 @@
     </div>
 
     <script>
-        const SPREADSHEET_ID = '1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ'; 
         const CLIENT_ID = '1010871423571-tc41gvqep2p5ump9i8sdq046vgr09kst.apps.googleusercontent.com';
         const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
         const EMAILS_AUTORIZZATE = ['tecnico@icaltavaldisole.it', 'email2@icaltavaldisole.it'];
-        const API_KEY = 'AIzaSyCBAMHlMKwdPs8hlvRnxxNOWwdXxqnKC3k';  // Inserisci qui la tua chiave API.
 
-        let libri = [];
-        let accessToken = null;
-        let tokenClient;
-
-        function gapiLoad() {
-            gapi.load('client', initializeGapiClient);
-        }
-
-        function initializeGapiClient() {
-            gapi.client.init({
-                apiKey: API_KEY,
-                discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
-            }).then(() => {
-                console.log('API Client inizializzato');
-            }).catch(error => {
-                console.error('Errore nell\'inizializzazione dell\'API Client:', error);
-            });
-        }
-
-        function gisLoad() {
-            tokenClient = google.accounts.oauth2.initTokenClient({
-                client_id: CLIENT_ID,
-                scope: SCOPES,
-                callback: handleCredentialResponse,
-            });
-        }
-
-        function authenticateAndLoad() {
-            const popup = window.open('https://accounts.google.com/o/oauth2/auth', 'Google Login', 'width=500,height=600');
-            
-            const timer = setInterval(() => {
-                if (popup.closed) {
-                    clearInterval(timer);
-                    checkLoginStatus();  // Controlla lo stato dopo la chiusura del popup
-                }
-            }, 500);
-        }
-
-        function handleCredentialResponse(response) {
-            if (response.error !== undefined) {
-                console.error('Errore nell\'ottenere il token di accesso:', response.error);
-                return;
-            }
-            accessToken = response.access_token;
-
-            gapi.client.oauth2.userinfo.get().execute(function(resp) {
-                const userEmail = resp.email;
-                if (EMAILS_AUTORIZZATE.includes(userEmail)) {
-                    document.getElementById('loginModal').style.display = 'none';
-                    document.getElementById('libraryContainer').style.display = 'block';
-                    loadBooks();
-                } else {
-                    alert('Accesso negato: questa email non è autorizzata.');
-                }
-            });
-        }
-
-        function checkLoginStatus() {
-            // Verifica lo stato di autenticazione
-            if (accessToken) {
-                gapi.client.oauth2.userinfo.get().execute(function(resp) {
-                    const userEmail = resp.email;
-                    if (EMAILS_AUTORIZZATE.includes(userEmail)) {
-                        document.getElementById('loginModal').style.display = 'none';
-                        document.getElementById('libraryContainer').style.display = 'block';
-                        loadBooks();  // Funzione che carica i libri
-                    } else {
-                        alert('Accesso negato: questa email non è autorizzata.');
-                    }
-                });
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            const userEmail = profile.getEmail();
+            if (EMAILS_AUTORIZZATE.includes(userEmail)) {
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('libraryContainer').style.display = 'block';
+                loadBooks();
+            } else {
+                alert('Accesso negato: questa email non è autorizzata.');
             }
         }
 
         async function loadBooks() {
             try {
                 const response = await gapi.client.sheets.spreadsheets.values.get({
-                    spreadsheetId: SPREADSHEET_ID,
+                    spreadsheetId: '1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ',
                     range: 'libreriaprincipale!A:D',
                 });
                 libri = response.result.values || [];
@@ -311,25 +248,18 @@
 
         function updateBooksTable() {
             const tableBody = document.getElementById('booksTable').getElementsByTagName('tbody')[0];
-            tableBody.innerHTML = ''; 
+            tableBody.innerHTML = '';
             libri.forEach((libro, index) => {
                 const row = tableBody.insertRow();
-                row.insertCell(0).textContent = libro[0]; 
-                row.insertCell(1).textContent = libro[1]; 
-                row.insertCell(2).textContent = libro[2]; 
+                row.insertCell(0).textContent = libro[0];
+                row.insertCell(1).textContent = libro[1];
+                row.insertCell(2).textContent = libro[2];
 
                 const actionsCell = row.insertCell(3);
-                if (libro[2] === 'Disponibile') {
-                    const button = document.createElement('button');
-                    button.textContent = 'Prestito';
-                    button.onclick = () => showActionModal('prestito', index);
-                    actionsCell.appendChild(button);
-                } else {
-                    const button = document.createElement('button');
-                    button.textContent = 'Consegna';
-                    button.onclick = () => showActionModal('consegna', index);
-                    actionsCell.appendChild(button);
-                }
+                const button = document.createElement('button');
+                button.textContent = libro[2] === 'Disponibile' ? 'Prestito' : 'Consegna';
+                button.onclick = () => showActionModal(libro[2] === 'Disponibile' ? 'prestito' : 'consegna', index);
+                actionsCell.appendChild(button);
             });
         }
 
@@ -345,39 +275,18 @@
             const email = document.getElementById('emailScolastica').value;
             const data = document.getElementById('data').value;
 
-            if (type === 'prestito') {
-                libri[index][2] = 'In prestito';
-                libri[index].prestito = { nome, cognome, email, data };
-            } else {
-                libri[index][2] = 'Disponibile';
-                libri[index].prestito = {};
-            }
-
-            updateSheet(index, libri[index]);
-            document.getElementById('actionModal').style.display = 'none';
-            updateBooksTable();
-        }
-
-        async function updateSheet(index, libro) {
-            const range = `libreriaprincipale!A${index + 1}:D${index + 1}`;
-            try {
-                await gapi.client.sheets.spreadsheets.values.update({
-                    spreadsheetId: SPREADSHEET_ID,
-                    range: range,
-                    valueInputOption: 'USER_ENTERED',
-                    resource: {
-                        values: [[libro[0], libro[1], libro[2], `${libro.prestito.nome || ''}, ${libro.prestito.cognome || ''}, ${libro.prestito.email || ''}, ${libro.prestito.data || ''}`]],
-                    },
-                });
-                console.log('Foglio aggiornato.');
-            } catch (error) {
-                console.error('Errore durante l\'aggiornamento dello Sheets:', error);
-            }
+            // Logica per aggiornare lo stato del libro
+            console.log('Azione confermata:', type, nome, cognome, email, data);
+            // Aggiorna la UI e potenzialmente il backend/spreadsheet
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            gapiLoad();
-            gisLoad();
+            gapi.load('auth2', function() {
+                gapi.auth2.init({
+                    client_id: CLIENT_ID,
+                    scope: SCOPES,
+                });
+            });
         });
     </script>
 </body>
