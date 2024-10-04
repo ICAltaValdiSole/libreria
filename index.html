@@ -2,10 +2,10 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-   <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://apis.google.com https://accounts.google.com 'unsafe-inline'; connect-src 'self' https://oauth2.googleapis.com https://content-sheets.googleapis.com; frame-src 'self' https://accounts.google.com https://content-sheets.googleapis.com;">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://apis.google.com https://accounts.google.com 'unsafe-inline'; connect-src 'self' https://oauth2.googleapis.com; frame-src https://accounts.google.com https://content-sheets.googleapis.com;">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Libreria Scolastica</title>
-    <style>
+     <style>
         body {
             font-family: 'Montserrat', sans-serif;
             margin: 0;
@@ -223,7 +223,6 @@
         const EMAILS_AUTORIZZATE = ['tecnico@icaltavaldisole.it', 'email2@icaltavaldisole.it'];
         const API_KEY = 'AIzaSyCBAMHlMKwdPs8hlvRnxxNOWwdXxqnKC3k';  // Inserisci qui la tua chiave API.
 
-        
         let libri = [];
         let accessToken = null;
         let tokenClient;
@@ -251,10 +250,15 @@
             });
         }
 
-        // Funzione di autenticazione e controllo email
         function authenticateAndLoad() {
-           tokenClient.requestAccessToken({ prompt: '' });
-
+            const popup = window.open('https://accounts.google.com/o/oauth2/auth', 'Google Login', 'width=500,height=600');
+            
+            const timer = setInterval(() => {
+                if (popup.closed) {
+                    clearInterval(timer);
+                    checkLoginStatus();  // Controlla lo stato dopo la chiusura del popup
+                }
+            }, 500);
         }
 
         function handleCredentialResponse(response) {
@@ -274,6 +278,22 @@
                     alert('Accesso negato: questa email non è autorizzata.');
                 }
             });
+        }
+
+        function checkLoginStatus() {
+            // Verifica lo stato di autenticazione
+            if (accessToken) {
+                gapi.client.oauth2.userinfo.get().execute(function(resp) {
+                    const userEmail = resp.email;
+                    if (EMAILS_AUTORIZZATE.includes(userEmail)) {
+                        document.getElementById('loginModal').style.display = 'none';
+                        document.getElementById('libraryContainer').style.display = 'block';
+                        loadBooks();  // Funzione che carica i libri
+                    } else {
+                        alert('Accesso negato: questa email non è autorizzata.');
+                    }
+                });
+            }
         }
 
         async function loadBooks() {
@@ -316,7 +336,6 @@
         function showActionModal(type, index) {
             document.getElementById('actionModal').style.display = 'flex';
             document.getElementById('modalTitle').textContent = type === 'prestito' ? 'Prestito Libro' : 'Consegna Libro';
-            // Salva l'indice del libro da modificare
             document.getElementById('confirmAction').onclick = () => confirmAction(type, index);
         }
 
@@ -363,4 +382,5 @@
     </script>
 </body>
 </html>
+
 
