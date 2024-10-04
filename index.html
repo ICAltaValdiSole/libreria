@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://apis.google.com https://accounts.google.com; connect-src 'self' https://oauth2.googleapis.com; frame-src https://accounts.google.com https://content-sheets.googleapis.com;">
+   <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://apis.google.com https://accounts.google.com 'nonce-yourNonceValue';">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Libreria Scolastica</title>
      <style>
@@ -168,6 +168,7 @@
     </style>
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="https://accounts.google.com/gsi/client"></script>
+    <script nonce="yourNonceValue"> console.log('Questo è uno script sicuro.');</script>
 </head>
 <body>
 
