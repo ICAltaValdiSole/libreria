@@ -43,20 +43,26 @@ function initClient() {
 }
 
 function handleCredentialResponse(response) {
-    const credential = response.credential;
-    gapi.client.setToken({access_token: credential});
+    console.log("Encoded JWT ID token: " + response.credential);
+    const idToken = response.credential; // JWT ID token
 
-    gapi.client.oauth2.userinfo.get().execute(function(resp) {
-        const userEmail = resp.email;
-        if (EMAILS_AUTORIZZATE.includes(userEmail)) {
-            document.getElementById('loginModal').style.display = 'none';
-            document.getElementById('libraryContainer').style.display = 'block';
-            loadBooks();
-        } else {
-            alert('Accesso negato: questa email non è autorizzata.');
+    google.accounts.id.decodeJwt({
+        jwt: idToken,
+        clientId: CLIENT_ID,
+        callback: (decodedJwt) => {
+            console.log(decodedJwt);
+            const userEmail = decodedJwt.payload.email;
+            if (EMAILS_AUTORIZZATE.includes(userEmail)) {
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('libraryContainer').style.display = 'block';
+                loadBooks();
+            } else {
+                alert('Accesso negato: questa email non è autorizzata.');
+            }
         }
     });
 }
+
 
 function loadBooks() {
     gapi.client.sheets.spreadsheets.values.get({
