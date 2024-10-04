@@ -5,53 +5,40 @@ const SPREADSHEET_ID = '1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ';
 const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 const DISCOVERY_DOCS = ['https://sheets.googleapis.com/$discovery/rest?version=v4'];
 
-// Authorized emails
 const EMAILS_AUTORIZZATE = ['tecnico@icaltavaldisole.it', 'email2@icaltavaldisole.it'];
 
-let libri = [];
-let gapiLoaded = false;
-let gisLoaded = false;
-
 document.addEventListener('DOMContentLoaded', function() {
-    loadGapiClient();
+    gapi.load('client', initGapiClient);
 });
 
-function loadGapiClient() {
-    gapi.load('client:auth2', initClient);
-}
-
-function initClient() {
+function initGapiClient() {
     gapi.client.init({
         apiKey: API_KEY,
         clientId: CLIENT_ID,
         discoveryDocs: DISCOVERY_DOCS,
         scope: SCOPES
     }).then(function () {
-        gapiLoaded = true;
         google.accounts.id.initialize({
             client_id: CLIENT_ID,
             callback: handleCredentialResponse
         });
         google.accounts.id.renderButton(
-            document.getElementById('signInDiv'),
-            { theme: 'outline', size: 'large' }  // Customize the button as needed
+            document.getElementById('signInDiv'), // Assicurati che questo sia il contenitore corretto
+            { theme: 'outline', size: 'large' }
         );
-        google.accounts.id.prompt(); // Display the One Tap sign-in prompt
-    }, function(error) {
-        console.log(JSON.stringify(error, null, 2));
+        google.accounts.id.prompt();
+    }).catch(function(error) {
+        console.error('Error initializing GAPI client:', error);
     });
 }
 
 function handleCredentialResponse(response) {
-    console.log("Encoded JWT ID token: " + response.credential);
-    const idToken = response.credential; // JWT ID token
-
-    google.accounts.id.decodeJwt({
-        jwt: idToken,
-        clientId: CLIENT_ID,
-        callback: (decodedJwt) => {
-            console.log(decodedJwt);
-            const userEmail = decodedJwt.payload.email;
+    const tokenBlob = new Blob([response.credential], {type: 'application/jwt'});
+    const reader = new FileReader();
+    reader.onload = function() {
+        try {
+            const jwt = JSON.parse(atob(this.result.split('.')[1]));
+            const userEmail = jwt.email;
             if (EMAILS_AUTORIZZATE.includes(userEmail)) {
                 document.getElementById('loginModal').style.display = 'none';
                 document.getElementById('libraryContainer').style.display = 'block';
@@ -59,10 +46,12 @@ function handleCredentialResponse(response) {
             } else {
                 alert('Accesso negato: questa email non è autorizzata.');
             }
+        } catch (e) {
+            console.error('Error parsing JWT', e);
         }
-    });
+    };
+    reader.readAsText(tokenBlob);
 }
-
 
 function loadBooks() {
     gapi.client.sheets.spreadsheets.values.get({
@@ -88,7 +77,6 @@ function updateBooksTable(books) {
         row.insertCell(0).textContent = book[0];
         row.insertCell(1).textContent = book[1];
         row.insertCell(2).textContent = book[2];
-
         const actionsCell = row.insertCell(3);
         const button = document.createElement('button');
         button.textContent = book[2] === 'Disponibile' ? 'Prestito' : 'Consegna';
@@ -109,8 +97,7 @@ function confirmAction(type, index) {
     const cognome = document.getElementById('cognome').value;
     const email = document.getElementById('emailScolastica').value;
     const data = document.getElementById('data').value;
-
     console.log('Action confirmed:', type, nome, cognome, email, data);
     document.getElementById('actionModal').style.display = 'none';
-    // Here you would update the backend or the spreadsheet accordingly
+    // Aggiorna il backend o il foglio di calcolo di Google come necessario
 }
