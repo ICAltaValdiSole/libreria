@@ -2,12 +2,8 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://apis.google.com https://accounts.google.com;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Libreria Scolastica</title>
-    <script src="https://apis.google.com/js/api.js"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="scripts.js" defer></script>
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
@@ -101,73 +97,6 @@
             cursor: not-allowed;
         }
 
-        /* Modal per il login */
-        #loginModal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            justify-content: center;
-            align-items: center;
-        }
-
-        #loginModal .modal-content {
-            background-color: white;
-            padding: 40px;
-            border-radius: 12px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        #loginModal button {
-            margin-top: 20px;
-        }
-
-        /* Modal per azioni (prestito/consegna) */
-        #actionModal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            justify-content: center;
-            align-items: center;
-        }
-
-        #actionModal .modal-content {
-            background-color: white;
-            padding: 40px;
-            border-radius: 12px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        #actionModal input {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            background-color: #607d8b;
-            color: white;
-            font-size: 14px;
-            width: 100%;
-            border-top: 1px solid #ddd;
-        }
     </style>
 </head>
 <body>
@@ -176,14 +105,7 @@
         <p>I.C. Alta Val di Sole</p>
     </header>
 
-    <div id="loginModal" style="display: flex;">
-        <div class="modal-content">
-            <h3>Sei il responsabile? Accedi con Google</h3>
-            <div class="g-signin2" data-onsuccess="onSignIn"></div>
-        </div>
-    </div>
-
-    <div class="container" id="libraryContainer" style="display:none;">
+    <div class="container">
         <h2>Elenco Libri Disponibili</h2>
         <table id="booksTable">
             <thead>
@@ -204,17 +126,59 @@
         <p>Libreria Scolastica - I.C. Alta Val di Sole</p>
     </footer>
 
-    <!-- Modale per azioni (prestito/consegna) -->
-    <div id="actionModal" style="display: none;">
-        <div class="modal-content">
-            <h3 id="modalTitle"></h3>
-            <input type="text" id="nome" placeholder="Nome" required>
-            <input type="text" id="cognome" placeholder="Cognome" required>
-            <input type="email" id="emailScolastica" placeholder="Email Scolastica" required>
-            <input type="date" id="data" required>
-            <button id="confirmAction">Conferma</button>
-        </div>
-    </div>
+    <script>
+        const SPREADSHEET_ID = '1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ'; // ID del tuo Google Sheets
+        const API_KEY = 'AIzaSyCBAMHlMKwdPs8hlvRnxxNOWwdXxqnKC3k'; // La tua chiave API
+        const PRESTITO_FORM_URL = 'https://forms.gle/x9YAXwoTzFegfzBd9'; // URL modulo Google Forms per prestito
+        const RESTITUZIONE_FORM_URL = 'https://forms.gle/iDc66iVGTaDqw5EK8'; // URL modulo Google Forms per restituzione
+
+        function loadBooks() {
+            fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/libreriaprincipale?key=${API_KEY}`)
+                .then(response => response.json())
+                .then(data => {
+                    const books = data.values;
+                    const tableBody = document.getElementById('booksTable').getElementsByTagName('tbody')[0];
+                    tableBody.innerHTML = ''; // Pulisce la tabella
+
+                    books.forEach((book, index) => {
+                        const row = tableBody.insertRow();
+                        row.insertCell(0).textContent = book[0]; // Titolo
+                        row.insertCell(1).textContent = book[1]; // Autore
+                        row.insertCell(2).textContent = book[2]; // Stato
+
+                        const actionsCell = row.insertCell(3);
+                        if (book[2] === 'Disponibile') {
+                            const button = document.createElement('button');
+                            button.textContent = 'Prendi in prestito';
+                            button.onclick = () => openForm('prestito', book[0]);
+                            actionsCell.appendChild(button);
+                        } else {
+                            const button = document.createElement('button');
+                            button.textContent = 'Restituisci';
+                            button.onclick = () => openForm('restituzione', book[0]);
+                            actionsCell.appendChild(button);
+                        }
+                    });
+                })
+                .catch(error => console.error('Errore durante il caricamento dei libri:', error));
+        }
+
+        function openForm(type, bookTitle) {
+            let formUrl = '';
+            if (type === 'prestito') {
+                formUrl = PRESTITO_FORM_URL;
+            } else {
+                formUrl = RESTITUZIONE_FORM_URL;
+            }
+
+            // Apre il form in una nuova finestra con il titolo del libro precompilato
+            window.open(`${formUrl}?entry.1234567890=${bookTitle}`, '_blank');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBooks();
+        });
+    </script>
 </body>
 </html>
 
