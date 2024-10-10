@@ -96,89 +96,88 @@
             background-color: grey;
             cursor: not-allowed;
         }
-
     </style>
 </head>
 <body>
-    <header>
-        <h1>Libreria Scolastica</h1>
-        <p>I.C. Alta Val di Sole</p>
-    </header>
 
-    <div class="container">
-        <h2>Elenco Libri Disponibili</h2>
-        <table id="booksTable">
-            <thead>
-                <tr>
-                    <th>Titolo</th>
-                    <th>Autore</th>
-                    <th>Stato</th>
-                    <th>Azioni</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Qui verranno aggiunti dinamicamente i libri tramite JavaScript -->
-            </tbody>
-        </table>
-    </div>
+<h1>Libreria Scolastica</h1>
+<table id="libriTable" border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Titolo</th>
+            <th>Autore</th>
+            <th>Disponibilità</th>
+            <th>Azione</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- I dati dei libri verranno aggiunti qui -->
+    </tbody>
+</table>
 
-    <footer>
-        <p>Libreria Scolastica - I.C. Alta Val di Sole</p>
-    </footer>
+<script>
+    // ID del foglio di Google Sheets
+    const sheetId = '1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ';
+    
+    // API key del progetto Google Cloud
+    const apiKey = 'AIzaSyCBAMHlMKwdPs8hlvRnxxNOWwdXxqnKC3k';
 
-    <script>
-        const SPREADSHEET_ID = '1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ'; // ID del tuo Google Sheets
-        const API_KEY = 'AIzaSyCBAMHlMKwdPs8hlvRnxxNOWwdXxqnKC3k'; // La tua chiave API
-        const PRESTITO_FORM_URL = 'https://forms.gle/x9YAXwoTzFegfzBd9'; // URL modulo Google Forms per prestito
-        const RESTITUZIONE_FORM_URL = 'https://forms.gle/iDc66iVGTaDqw5EK8'; // URL modulo Google Forms per restituzione
+    // URL per ottenere i dati dal foglio Google Sheets
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/libreriaprincipale?key=${apiKey}`;
 
-        function loadBooks() {
-            fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/libreriaprincipale?key=${API_KEY}`)
-                .then(response => response.json())
-                .then(data => {
-                    const books = data.values;
-                    const tableBody = document.getElementById('booksTable').getElementsByTagName('tbody')[0];
-                    tableBody.innerHTML = ''; // Pulisce la tabella
+    // Funzione per caricare i libri dal Google Sheets
+    async function caricaLibri() {
+        const response = await fetch(url);
+        const data = await response.json();
+        const libri = data.values;
 
-                    books.forEach((book, index) => {
-                        const row = tableBody.insertRow();
-                        row.insertCell(0).textContent = book[0]; // Titolo
-                        row.insertCell(1).textContent = book[1]; // Autore
-                        row.insertCell(2).textContent = book[2]; // Stato
+        // Seleziona il corpo della tabella dove verranno inseriti i dati
+        const tbody = document.querySelector('#libriTable tbody');
 
-                        const actionsCell = row.insertCell(3);
-                        if (book[2] === 'Disponibile') {
-                            const button = document.createElement('button');
-                            button.textContent = 'Prendi in prestito';
-                            button.onclick = () => openForm('prestito', book[0]);
-                            actionsCell.appendChild(button);
-                        } else {
-                            const button = document.createElement('button');
-                            button.textContent = 'Restituisci';
-                            button.onclick = () => openForm('restituzione', book[0]);
-                            actionsCell.appendChild(button);
-                        }
-                    });
-                })
-                .catch(error => console.error('Errore durante il caricamento dei libri:', error));
-        }
+        // Rimuoviamo la prima riga poiché contiene i nomi delle colonne
+        libri.shift();
 
-        function openForm(type, bookTitle) {
-            let formUrl = '';
-            if (type === 'prestito') {
-                formUrl = PRESTITO_FORM_URL;
-            } else {
-                formUrl = RESTITUZIONE_FORM_URL;
-            }
+        libri.forEach(libro => {
+            const [id, titolo, autore, disponibilita] = libro;
 
-            // Apre il form in una nuova finestra con il titolo del libro precompilato
-            window.open(`${formUrl}?entry.1234567890=${bookTitle}`, '_blank');
-        }
+            // Creiamo una nuova riga nella tabella per ogni libro
+            const tr = document.createElement('tr');
 
-        document.addEventListener('DOMContentLoaded', function() {
-            loadBooks();
+            // Creiamo le celle per ID, Titolo, Autore e Disponibilità
+            tr.innerHTML = `
+                <td>${id}</td>
+                <td>${titolo}</td>
+                <td>${autore}</td>
+                <td id="disponibilita-${id}">${disponibilita}</td>
+                <td>
+                    ${disponibilita === 'Disponibile' 
+                        ? `<button onclick="prendiInPrestito(${id})">Prendi in Prestito</button>`
+                        : `<button onclick="restituisciLibro(${id})">Restituisci</button>`}
+                </td>
+            `;
+
+            // Aggiungiamo la riga alla tabella
+            tbody.appendChild(tr);
         });
-    </script>
+    }
+
+    // Funzione per aprire il modulo di prestito con l'ID del libro
+    function prendiInPrestito(idLibro) {
+        const urlModuloPrestito = `https://docs.google.com/forms/d/e/1FAIpQLScUNgMUgKa_URu74Ju3G1HZXDMVlNMzX1D2egxB7Ut34wzIqg/viewform?usp=pp_url&entry.123456789=${idLibro}`;
+        window.open(urlModuloPrestito, '_blank');
+    }
+
+    // Funzione per aprire il modulo di restituzione con l'ID del libro
+    function restituisciLibro(idLibro) {
+        const urlModuloRestituzione = `https://docs.google.com/forms/d/e/1FAIpQLSfqR3bdauSlexTrCqcPnn05kjbOnE4utylDPUoIdRHqheSYCg/viewform?usp=pp_url&entry.987654321=${idLibro}`;
+        window.open(urlModuloRestituzione, '_blank');
+    }
+
+    // Carichiamo i libri appena la pagina viene caricata
+    caricaLibri();
+</script>
+
 </body>
 </html>
 
