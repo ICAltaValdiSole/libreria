@@ -160,6 +160,29 @@
             // Aggiungiamo la riga alla tabella
             tbody.appendChild(tr);
         });
+
+setInterval(async () => {
+    const response = await fetch(url);
+    const data = await response.json();
+    const libri = data.values;
+    libri.shift();
+    libri.forEach(libro => {
+        const [id, , , disponibilita] = libro;
+        const buttonCell = document.querySelector(`#disponibilita-${id}`).nextElementSibling;
+        const disponibilitaCell = document.querySelector(`#disponibilita-${id}`);
+        
+        if (disponibilita === 'In Prestito') {
+            buttonCell.innerHTML = `<button onclick="restituisciLibro(${id})">Restituisci</button>`;
+            disponibilitaCell.textContent = 'In Prestito';
+        } else {
+            buttonCell.innerHTML = `<button onclick="prendiInPrestito(${id})">Prendi in Prestito</button>`;
+            disponibilitaCell.textContent = 'Disponibile';
+        }
+    });
+}, 10000); // Controlla ogni 10 secondi
+
+
+        
     }
 
     // Funzione per aprire il modulo di prestito con l'ID del libro
