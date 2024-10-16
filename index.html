@@ -16,7 +16,7 @@
 /* Body */
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #fac960; /* Giallo come nel sito che hai indicato */
+    background-color: #fac960; /* Giallo come richiesto */
     color: #333;
     padding: 0;
     margin: 0;
@@ -26,7 +26,7 @@ body {
 .navbar {
     background-color: white; /* Barra bianca */
     color: #333;
-    padding: 10px 0; /* Riduce l'altezza della barra per renderla minimal */
+    padding: 10px 0; /* Ridotto per un look minimal */
     text-align: center;
     position: fixed;
     width: 100%;
@@ -35,13 +35,29 @@ body {
     z-index: 1000;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     font-weight: 700;
-    font-size: 24px; /* Dimensione più ridotta per il titolo */
+    font-size: 24px; /* Ridotto il font */
     font-family: 'Inter', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Contenitore per il logo */
+.logo-container {
+    display: inline-block;
+    margin-right: 10px; /* Spazio tra il logo e il testo */
+}
+
+/* Stile dell'icona/logo */
+.logo {
+    width: 40px; /* Dimensione dell'icona */
+    height: 40px; /* Dimensione dell'icona */
+    vertical-align: middle;
 }
 
 /* Spazio per compensare la barra di navigazione fissa */
 body {
-    padding-top: 60px; /* Ridotto per adattarsi alla barra minimale */
+    padding-top: 60px; /* Adattato alla barra minima */
 }
 
 /* Contenitore della barra di ricerca */
@@ -63,7 +79,7 @@ body {
 
 #searchInput:focus {
     outline: none;
-    border-color: #ffcc00; /* Giallo come nel sito Space */
+    border-color: #ffcc00; /* Giallo richiesto */
     box-shadow: 0px 6px 20px rgba(255, 204, 0, 0.4);
 }
 
@@ -106,7 +122,7 @@ td {
 /* Pulsanti gialli */
 button {
     padding: 10px 20px;
-    background-color: #fac960; /* Giallo come nel sito Space */
+    background-color: #fac960; /* Giallo come richiesto */
     color: white;
     border: none;
     cursor: pointer;
@@ -140,16 +156,22 @@ button:disabled {
     }
 
     .navbar h1 {
-        font-size: 20px; /* Riduce la dimensione del titolo su dispositivi mobili */
+        font-size: 20px; /* Riduce la dimensione su dispositivi mobili */
+    }
+
+    .logo {
+        width: 30px;
+        height: 30px; /* Riduci le dimensioni dell'icona su mobile */
     }
 }
-
-
     </style>
 </head>
 <body>
 <!-- Barra di navigazione fissa -->
 <header class="navbar">
+    <div class="logo-container">
+        <img src="Logo.png" alt="Logo Scuola" class="logo">
+    </div>
     <h1>Libreria Scolastica I.C. Alta Val di Sole</h1>
 </header>
 
