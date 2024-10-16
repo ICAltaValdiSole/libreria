@@ -109,12 +109,33 @@ button:disabled {
 table, .container {
     margin-top: 20px;
 }
+/* Stile per il campo di ricerca */
+.search-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#searchInput {
+    width: 50%;
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+}
+
+#searchInput:focus {
+    border-color: #FF6F61; /* Cambia colore quando si seleziona il campo di ricerca */
+    outline: none;
+}
 
     </style>
 </head>
 <body>
-
 <h1>Libreria Scolastica</h1>
+<div class="search-container">
+<input type="text" id="searchInput" placeholder="Cerca per titolo o autore..." onkeyup="filtraLibri()" />
+</div>
 <table id="libriTable" border="1">
     <thead>
         <tr>
@@ -211,6 +232,33 @@ function restituisciLibro(idLibro) {
     window.open(urlModuloRestituzione, '_blank');
 }
 
+// Funzione per filtrare i libri in base al titolo o autore
+function filtraLibri() {
+    // Ottieni il valore dell'input di ricerca
+    var input = document.getElementById("searchInput");
+    var filtro = input.value.toLowerCase(); // Converte in minuscolo per una ricerca case-insensitive
+    
+    // Ottieni la tabella e tutte le righe
+    var table = document.getElementById("libriTable");
+    var tr = table.getElementsByTagName("tr");
+
+    // Loop attraverso tutte le righe della tabella (tr) e nascondi quelle che non corrispondono alla query
+    for (var i = 1; i < tr.length; i++) { // Inizia da 1 per saltare l'intestazione della tabella
+        var tdTitolo = tr[i].getElementsByTagName("td")[1]; // Colonna Titolo
+        var tdAutore = tr[i].getElementsByTagName("td")[2]; // Colonna Autore
+        if (tdTitolo || tdAutore) {
+            var txtTitolo = tdTitolo.textContent || tdTitolo.innerText;
+            var txtAutore = tdAutore.textContent || tdAutore.innerText;
+            
+            // Se il titolo o l'autore contengono il testo cercato, mostra la riga, altrimenti nascondila
+            if (txtTitolo.toLowerCase().indexOf(filtro) > -1 || txtAutore.toLowerCase().indexOf(filtro) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+}
 
     // Carichiamo i libri appena la pagina viene caricata
     caricaLibri();
