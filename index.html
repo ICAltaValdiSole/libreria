@@ -185,17 +185,18 @@ setInterval(async () => {
         
     }
 
-    // Funzione per aprire il modulo di prestito con l'ID del libro
-    function prendiInPrestito(idLibro) {
-        const urlModuloPrestito = `https://docs.google.com/forms/d/e/1FAIpQLScUNgMUgKa_URu74Ju3G1HZXDMVlNMzX1D2egxB7Ut34wzIqg/viewform?usp=pp_url&entry.123456789=${idLibro}`;
-        window.open(urlModuloPrestito, '_blank');
-    }
+  // Funzione per aprire il modulo di prestito con l'ID del libro precompilato
+function prendiInPrestito(idLibro) {
+    const urlModuloPrestito = `https://docs.google.com/forms/d/e/1FAIpQLScUNgMUgKa_URu74Ju3G1HZXDMVlNMzX1D2egxB7Ut34wzIqg/viewform?entry.1518254211=${idLibro}`;
+    window.open(urlModuloPrestito, '_blank');
+}
 
-    // Funzione per aprire il modulo di restituzione con l'ID del libro
-    function restituisciLibro(idLibro) {
-        const urlModuloRestituzione = `https://docs.google.com/forms/d/e/1FAIpQLSfqR3bdauSlexTrCqcPnn05kjbOnE4utylDPUoIdRHqheSYCg/viewform?usp=pp_url&entry.987654321=${idLibro}`;
-        window.open(urlModuloRestituzione, '_blank');
-    }
+// Funzione per aprire il modulo di restituzione con l'ID del libro precompilato
+function restituisciLibro(idLibro) {
+    const urlModuloRestituzione = `https://docs.google.com/forms/d/e/1FAIpQLSfqR3bdauSlexTrCqcPnn05kjbOnE4utylDPUoIdRHqheSYCg/viewform?entry.300178690=${idLibro}`;
+    window.open(urlModuloRestituzione, '_blank');
+}
+
 
     // Carichiamo i libri appena la pagina viene caricata
     caricaLibri();
