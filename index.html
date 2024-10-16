@@ -6,27 +6,27 @@
     <title>Libreria Scolastica</title>
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
     <style>
- /* Reset di base per togliere padding/margin predefiniti */
+/* Reset di base */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Body - font moderni e sfondo leggero */
+/* Body */
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #f7f8fc;
+    background-color: #fffaf0;
     color: #333;
-    margin: 0;
     padding: 0;
+    margin: 0;
 }
 
 /* Barra di navigazione fissa */
 .navbar {
-    background-color: #292b2c; /* Colore scuro per contrasto */
-    color: white;
-    padding: 15px;
+    background-color: #ffcc00; /* Colore giallo ispirato al sito */
+    color: #333;
+    padding: 20px;
     text-align: center;
     position: fixed;
     width: 100%;
@@ -34,41 +34,40 @@ body {
     left: 0;
     z-index: 1000;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.navbar h1 {
-    font-size: 24px;
     font-weight: 600;
-    letter-spacing: 0.5px;
+    font-size: 24px;
 }
 
-/* Spazio per compensare la barra fissa */
+/* Spazio per compensare la barra di navigazione fissa */
 body {
-    padding-top: 70px;
+    padding-top: 90px;
 }
 
-/* Contenitore di ricerca */
+/* Contenitore della barra di ricerca */
 .search-container {
     text-align: center;
-    margin: 40px auto;
+    margin: 50px auto;
+    padding: 10px;
 }
 
+/* Barra di ricerca moderna */
 #searchInput {
     width: 50%;
     padding: 15px;
-    font-size: 18px;
-    border: none;
+    font-size: 16px;
+    border: 1px solid #ddd;
     border-radius: 25px;
+    transition: all 0.3s ease;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s ease;
 }
 
 #searchInput:focus {
     outline: none;
-    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.2);
+    border-color: #ffcc00;
+    box-shadow: 0px 6px 20px rgba(255, 204, 0, 0.4);
 }
 
-/* Contenitore della tabella */
+/* Contenitore per la tabella */
 .container {
     width: 85%;
     margin: 0 auto;
@@ -76,14 +75,12 @@ body {
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
-    margin-bottom: 50px;
 }
 
-/* Stile della tabella */
+/* Tabella */
 table {
     width: 100%;
     border-collapse: collapse;
-    background-color: white;
 }
 
 th, td {
@@ -93,34 +90,33 @@ th, td {
 }
 
 th {
-    background-color: #292b2c;
+    background-color: #333;
     color: white;
     font-size: 18px;
-    font-weight: bold;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-weight: 600;
 }
 
 td {
-    background-color: white;
+    background-color: #fff;
+    font-size: 16px;
 }
 
-/* Pulsanti centrati e moderni */
+/* Pulsanti */
 button {
-    padding: 12px 25px;
-    background-color: #5cb85c;
+    padding: 10px 20px;
+    background-color: #ffcc00;
     color: white;
     border: none;
     cursor: pointer;
     font-size: 15px;
     border-radius: 25px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, box-shadow 0.2s ease;
+    transition: all 0.3s ease;
 }
 
 button:hover {
-    background-color: #4cae4c;
-    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+    background-color: #ff9900;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 button:disabled {
@@ -128,12 +124,8 @@ button:disabled {
     cursor: not-allowed;
 }
 
-/* Responsive design per dispositivi mobili */
+/* Responsive */
 @media screen and (max-width: 768px) {
-    .navbar h1 {
-        font-size: 18px;
-    }
-
     #searchInput {
         width: 90%;
     }
@@ -145,31 +137,39 @@ button:disabled {
     button {
         width: 100%;
     }
+
+    .navbar h1 {
+        font-size: 20px;
+    }
 }
 
     </style>
 </head>
 <body>
-<header>
+<!-- Barra di navigazione fissa -->
+<header class="navbar">
     <h1>Libreria Scolastica I.C. Alta Val di Sole</h1>
 </header>
+
 <div class="search-container">
-<input type="text" id="searchInput" placeholder="Cerca per titolo o autore..." onkeyup="filtraLibri()" />
+    <input type="text" id="searchInput" placeholder="Cerca per titolo o autore..." onkeyup="filtraLibri()">
 </div>
-<table id="libriTable" border="1">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Titolo</th>
-            <th>Autore</th>
-            <th>Disponibilità</th>
-            <th>Azione</th>
-        </tr>
-    </thead>
-    <tbody>
-        <!-- I dati dei libri verranno aggiunti qui -->
-    </tbody>
-</table>
+<div class="container">
+    <table id="libriTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Titolo</th>
+                <th>Autore</th>
+                <th>Disponibilità</th>
+                <th>Azione</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- I dati dei libri verranno aggiunti qui -->
+        </tbody>
+    </table>
+</div>
 
 <script>
     // ID del foglio di Google Sheets
