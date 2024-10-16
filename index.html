@@ -155,6 +155,31 @@ button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
 }
+        /* Pulsanti di filtro */
+.filter-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.filter-btn {
+    padding: 10px 20px;
+    background-color: #fac960; /* Giallo richiesto */
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    border-radius: 25px;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+    background-color: #ff9900;
+}
+
+.filter-btn.active {
+    background-color: #ff9900;
+}
 
 /* Responsive */
 @media screen and (max-width: 768px) {
@@ -193,6 +218,13 @@ button:disabled {
 <div class="search-container">
     <input type="text" id="searchInput" placeholder="Cerca per titolo o autore..." onkeyup="filtraLibri()">
 </div>
+
+<div class="filter-container">
+    <button class="filter-btn active" onclick="filtraPerTipo('Tutti')">Tutti</button>
+    <button class="filter-btn" onclick="filtraPerTipo('Libro')">Libri</button>
+    <button class="filter-btn" onclick="filtraPerTipo('DVD')">DVD</button>
+</div>
+    
 <div class="container">
     <table id="libriTable">
         <thead>
@@ -221,29 +253,32 @@ button:disabled {
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/libreriaprincipale?key=${apiKey}`;
 
     // Funzione per caricare i libri dal Google Sheets
-    async function caricaLibri() {
+       async function caricaLibri() {
         const response = await fetch(url);
         const data = await response.json();
         const libri = data.values;
 
         // Seleziona il corpo della tabella dove verranno inseriti i dati
         const tbody = document.querySelector('#libriTable tbody');
+        tbody.innerHTML = ''; // Pulisce la tabella prima di aggiungere nuovi dati
 
         // Rimuoviamo la prima riga poiché contiene i nomi delle colonne
         libri.shift();
 
         libri.forEach(libro => {
-            const [id, titolo, autore, disponibilita] = libro;
+            const [id, titolo, autore, disponibilita, tipo] = libro;
 
-            // Creiamo una nuova riga nella tabella per ogni libro
+            // Creiamo una nuova riga nella tabella per ogni libro/DVD
             const tr = document.createElement('tr');
+            tr.setAttribute('data-tipo', tipo); // Attributo personalizzato per il tipo (Libro/DVD)
 
-            // Creiamo le celle per ID, Titolo, Autore e Disponibilità
+            // Creiamo le celle per ID, Titolo, Autore, Disponibilità e Tipo
             tr.innerHTML = `
                 <td>${id}</td>
                 <td>${titolo}</td>
                 <td>${autore}</td>
                 <td id="disponibilita-${id}">${disponibilita}</td>
+                <td>${tipo}</td>
                 <td>
                     ${disponibilita === 'Disponibile' 
                         ? `<button onclick="prendiInPrestito(${id})">Prendi in Prestito</button>`
@@ -255,71 +290,47 @@ button:disabled {
             tbody.appendChild(tr);
         });
 
-setInterval(async () => {
-    const response = await fetch(url);
-    const data = await response.json();
-    const libri = data.values;
-    libri.shift();
-    libri.forEach(libro => {
-        const [id, , , disponibilita] = libro;
-        const buttonCell = document.querySelector(`#disponibilita-${id}`).nextElementSibling;
-        const disponibilitaCell = document.querySelector(`#disponibilita-${id}`);
-        
-        if (disponibilita === 'In Prestito') {
-            buttonCell.innerHTML = `<button onclick="restituisciLibro(${id})">Restituisci</button>`;
-            disponibilitaCell.textContent = 'In Prestito';
-        } else {
-            buttonCell.innerHTML = `<button onclick="prendiInPrestito(${id})">Prendi in Prestito</button>`;
-            disponibilitaCell.textContent = 'Disponibile';
-        }
-    });
-}, 10000); // Controlla ogni 10 secondi
-
-
-        
+        filtraLibri(); // Applica il filtro alla fine
     }
 
-  // Funzione per aprire il modulo di prestito con l'ID del libro precompilato
-function prendiInPrestito(idLibro) {
-    const urlModuloPrestito = `https://docs.google.com/forms/d/e/1FAIpQLScUNgMUgKa_URu74Ju3G1HZXDMVlNMzX1D2egxB7Ut34wzIqg/viewform?entry.1518254211=${idLibro}`;
-    window.open(urlModuloPrestito, '_blank');
-}
+    // Funzione per aprire il modulo di prestito con l'ID del libro precompilato
+    function prendiInPrestito(idLibro) {
+        const urlModuloPrestito = `https://docs.google.com/forms/d/e/1FAIpQLScUNgMUgKa_URu74Ju3G1HZXDMVlNMzX1D2egxB7Ut34wzIqg/viewform?entry.1518254211=${idLibro}`;
+        window.open(urlModuloPrestito, '_blank');
+    }
 
-// Funzione per aprire il modulo di restituzione con l'ID del libro precompilato
-function restituisciLibro(idLibro) {
-    const urlModuloRestituzione = `https://docs.google.com/forms/d/e/1FAIpQLSfqR3bdauSlexTrCqcPnn05kjbOnE4utylDPUoIdRHqheSYCg/viewform?entry.300178690=${idLibro}`;
-    window.open(urlModuloRestituzione, '_blank');
-}
+    // Funzione per aprire il modulo di restituzione con l'ID del libro precompilato
+    function restituisciLibro(idLibro) {
+        const urlModuloRestituzione = `https://docs.google.com/forms/d/e/1FAIpQLSfqR3bdauSlexTrCqcPnn05kjbOnE4utylDPUoIdRHqheSYCg/viewform?entry.300178690=${idLibro}`;
+        window.open(urlModuloRestituzione, '_blank');
+    }
 
-// Funzione per filtrare i libri in base al titolo o autore
-function filtraLibri() {
-    // Ottieni il valore dell'input di ricerca
-    var input = document.getElementById("searchInput");
-    var filtro = input.value.toLowerCase(); // Converte in minuscolo per una ricerca case-insensitive
-    
-    // Ottieni la tabella e tutte le righe
-    var table = document.getElementById("libriTable");
-    var tr = table.getElementsByTagName("tr");
+    // Funzione per filtrare i libri in base al titolo, autore e tipo
+    function filtraLibri() {
+        const input = document.getElementById("searchInput").value.toLowerCase();
+        const tr = document.querySelectorAll("#libriTable tbody tr");
 
-    // Loop attraverso tutte le righe della tabella (tr) e nascondi quelle che non corrispondono alla query
-    for (var i = 1; i < tr.length; i++) { // Inizia da 1 per saltare l'intestazione della tabella
-        var tdTitolo = tr[i].getElementsByTagName("td")[1]; // Colonna Titolo
-        var tdAutore = tr[i].getElementsByTagName("td")[2]; // Colonna Autore
-        if (tdTitolo || tdAutore) {
-            var txtTitolo = tdTitolo.textContent || tdTitolo.innerText;
-            var txtAutore = tdAutore.textContent || tdAutore.innerText;
+        tr.forEach(row => {
+            const tdTitolo = row.cells[1].textContent.toLowerCase();
+            const tdAutore = row.cells[2].textContent.toLowerCase();
+            const tipo = row.getAttribute('data-tipo');
             
-            // Se il titolo o l'autore contengono il testo cercato, mostra la riga, altrimenti nascondila
-            if (txtTitolo.toLowerCase().indexOf(filtro) > -1 || txtAutore.toLowerCase().indexOf(filtro) > -1) {
-                tr[i].style.display = "";
-            } else {
-                tr[i].style.display = "none";
-            }
-        }
-    }
-}
+            const matchText = tdTitolo.includes(input) || tdAutore.includes(input);
+            const matchTipo = tipoFiltrato === 'Tutti' || tipoFiltrato === tipo;
 
-    // Carichiamo i libri appena la pagina viene caricata
+            row.style.display = (matchText && matchTipo) ? "" : "none";
+        });
+    }
+
+    // Funzione per filtrare per tipo (Libri/DVD)
+    function filtraPerTipo(tipo) {
+        tipoFiltrato = tipo; // Aggiorna il tipo di filtro
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active')); // Rimuovi lo stato attivo da tutti i pulsanti
+        document.querySelector(`button[onclick="filtraPerTipo('${tipo}')"]`).classList.add('active'); // Aggiungi lo stato attivo al pulsante cliccato
+        filtraLibri(); // Applica il filtro
+    }
+
+    // Carichiamo i libri e i DVD appena la pagina viene caricata
     caricaLibri();
 </script>
 
