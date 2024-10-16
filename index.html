@@ -16,7 +16,7 @@
 /* Body */
 body {
     font-family: 'Inter', sans-serif;
-    background: url('nonsfocato.jpg') no-repeat center center fixed; /* Sostituisci con l'URL della tua immagine */
+    background: url('nonsfocato.jpg') no-repeat center center fixed;
     background-size: cover;
     color: #333;
     padding: 0;
@@ -32,15 +32,15 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.85); /* Sovrapposizione trasparente per migliorare la leggibilità */
+    background-color: rgba(255, 255, 255, 0.85);
     z-index: -1;
 }
 
 /* Barra di navigazione fissa e minimale */
 .navbar {
-    background-color: white; /* Barra bianca */
+    background-color: white;
     color: #333;
-    padding: 10px 0; /* Ridotto per un look minimal */
+    padding: 15px 0;
     text-align: center;
     position: fixed;
     width: 100%;
@@ -49,7 +49,7 @@ body::before {
     z-index: 1000;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     font-weight: 700;
-    font-size: 15px; /* Ridotto il font */
+    font-size: 20px;
     font-family: 'Inter', sans-serif;
     display: flex;
     justify-content: center;
@@ -59,31 +59,30 @@ body::before {
 /* Contenitore per il logo */
 .logo-container {
     display: inline-block;
-    margin-right: 10px; /* Spazio tra il logo e il testo */
+    margin-right: 10px;
 }
 
 /* Stile dell'icona/logo */
 .logo {
-    width: 60px; /* Dimensione dell'icona */
-    height: 60px; /* Dimensione dell'icona */
+    width: 50px;
+    height: 50px;
     vertical-align: middle;
 }
 
 /* Spazio per compensare la barra di navigazione fissa */
 body {
-    padding-top: 60px; /* Adattato alla barra minima */
+    padding-top: 80px;
 }
 
 /* Contenitore della barra di ricerca */
 .search-container {
     text-align: center;
-    margin: 40px auto;
+    margin: 20px auto;
 }
 
-/* Barra di ricerca moderna */
 #searchInput {
-    width: 50%;
-    padding: 15px;
+    width: 60%;
+    padding: 12px;
     font-size: 16px;
     border: 1px solid #ddd;
     border-radius: 25px;
@@ -93,32 +92,58 @@ body {
 
 #searchInput:focus {
     outline: none;
-    border-color: #ffcc00; /* Giallo richiesto */
+    border-color: #ffcc00;
     box-shadow: 0px 6px 20px rgba(255, 204, 0, 0.4);
+}
+
+/* Pulsanti di filtro centrati */
+.filter-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.filter-btn {
+    padding: 10px 20px;
+    background-color: #fac960;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    border-radius: 25px;
+    margin: 0 10px;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.filter-btn:hover {
+    background-color: #ff9900;
+}
+
+.filter-btn.active {
+    background-color: #ff9900;
 }
 
 /* Contenitore per la tabella */
 .container {
-    width: 85%;
-    margin: 0 auto;
+    width: 80%;
+    margin: 20px auto;
     background-color: white;
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
-    margin-bottom: 50px;
-    background-color: rgba(255, 255, 255, 0.9); /* Sfondo bianco semi-trasparente per la tabella */
 }
 
 /* Tabella */
 table {
     width: 100%;
     border-collapse: collapse;
+    text-align: left;
 }
 
 th, td {
-    text-align: left;
-    padding: 18px;
+    padding: 16px;
     border-bottom: 1px solid #e0e0e0;
+    text-align: left;
 }
 
 th {
@@ -134,10 +159,15 @@ td {
     font-size: 16px;
 }
 
+/* Pulsanti centrati nella colonna Azione */
+td:last-child {
+    text-align: center;
+}
+
 /* Pulsanti gialli */
 button {
     padding: 10px 20px;
-    background-color: #fac960; /* Giallo come richiesto */
+    background-color: #fac960;
     color: white;
     border: none;
     cursor: pointer;
@@ -149,36 +179,6 @@ button {
 button:hover {
     background-color: #ff9900;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-        /* Pulsanti di filtro */
-.filter-container {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.filter-btn {
-    padding: 10px 20px;
-    background-color: #fac960; /* Giallo richiesto */
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 15px;
-    border-radius: 25px;
-    margin-right: 10px;
-    transition: all 0.3s ease;
-}
-
-.filter-btn:hover {
-    background-color: #ff9900;
-}
-
-.filter-btn.active {
-    background-color: #ff9900;
 }
 
 /* Responsive */
@@ -196,12 +196,12 @@ button:disabled {
     }
 
     .navbar h1 {
-        font-size: 20px; /* Riduce la dimensione su dispositivi mobili */
+        font-size: 20px;
     }
 
     .logo {
         width: 30px;
-        height: 30px; /* Riduci le dimensioni dell'icona su mobile */
+        height: 30px;
     }
 }
     </style>
@@ -219,12 +219,13 @@ button:disabled {
     <input type="text" id="searchInput" placeholder="Cerca per titolo o autore..." onkeyup="filtraLibri()">
 </div>
 
+<!-- Pulsanti di filtro centrati -->
 <div class="filter-container">
     <button class="filter-btn active" onclick="filtraPerTipo('Tutti')">Tutti</button>
     <button class="filter-btn" onclick="filtraPerTipo('Libro')">Libri</button>
     <button class="filter-btn" onclick="filtraPerTipo('DVD')">DVD</button>
 </div>
-    
+
 <div class="container">
     <table id="libriTable">
         <thead>
@@ -252,8 +253,10 @@ button:disabled {
     // URL per ottenere i dati dal foglio Google Sheets
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/libreriaprincipale?key=${apiKey}`;
 
-    // Funzione per caricare i libri dal Google Sheets
-       async function caricaLibri() {
+    let tipoFiltrato = 'Tutti'; // Variabile per tenere traccia del filtro selezionato
+
+    // Funzione per caricare i libri e DVD dal Google Sheets
+    async function caricaLibri() {
         const response = await fetch(url);
         const data = await response.json();
         const libri = data.values;
@@ -272,13 +275,12 @@ button:disabled {
             const tr = document.createElement('tr');
             tr.setAttribute('data-tipo', tipo); // Attributo personalizzato per il tipo (Libro/DVD)
 
-            // Creiamo le celle per ID, Titolo, Autore, Disponibilità e Tipo
+            // Creiamo le celle per ID, Titolo, Autore, Disponibilità e Azione
             tr.innerHTML = `
                 <td>${id}</td>
                 <td>${titolo}</td>
                 <td>${autore}</td>
                 <td id="disponibilita-${id}">${disponibilita}</td>
-                <td>${tipo}</td>
                 <td>
                     ${disponibilita === 'Disponibile' 
                         ? `<button onclick="prendiInPrestito(${id})">Prendi in Prestito</button>`
