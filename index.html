@@ -16,10 +16,24 @@
 /* Body */
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #fac960; /* Giallo come richiesto */
+    background: url('sfocato.jpg') no-repeat center center fixed; /* Sostituisci con l'URL della tua immagine */
+    background-size: cover;
     color: #333;
     padding: 0;
     margin: 0;
+    position: relative;
+}
+
+/* Sovrapposizione trasparente */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.85); /* Sovrapposizione trasparente per migliorare la leggibilità */
+    z-index: -1;
 }
 
 /* Barra di navigazione fissa e minimale */
@@ -92,6 +106,7 @@ body {
     border-radius: 12px;
     box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
     margin-bottom: 50px;
+    background-color: rgba(255, 255, 255, 0.9); /* Sfondo bianco semi-trasparente per la tabella */
 }
 
 /* Tabella */
@@ -310,6 +325,3 @@ function filtraLibri() {
 
 </body>
 </html>
-
-
-
