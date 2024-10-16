@@ -6,110 +6,41 @@
     <title>Libreria Scolastica</title>
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
     <style>
-       /* Aggiorna il corpo e imposta un colore di sfondo più rilassante */
+   /* Aggiorna il corpo */
 body {
-    font-family: 'Lora', serif; /* Font più elegante */
-    background-color: #f5f3e6; /* Colore di sfondo chiaro simile alla carta */
+    font-family: 'Lora', serif;
+    background-color: #f5f3e6;
     color: #333;
     margin: 0;
     padding: 0;
 }
 
-/* Contenitore centrale con bordi arrotondati */
+/* Contenitore centrale */
 .container {
     width: 80%;
     margin: 50px auto;
-    background-color: #fff; /* Bianco puro per contrastare con il beige dello sfondo */
+    background-color: #fff;
     padding: 30px;
-    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1); /* Ombra più pronunciata per un effetto 3D */
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
     border-radius: 12px;
     transition: box-shadow 0.3s ease;
 }
 
-/* Header accattivante con immagine */
+/* Header con immagine di sfondo */
 header {
-    background-image: url('sfondo_libreria.jpg'); /* Cambia questa immagine con una libreria */
+    background-image: url('sfondo.jpeg'); /* Usa la tua immagine qui */
     background-size: cover;
     background-position: center;
     color: #fff;
-    padding: 60px 0;
+    padding: 80px 0; /* Maggiore spazio per il titolo */
     text-align: center;
-    font-size: 45px;
+    font-size: 50px; /* Titolo più grande */
     letter-spacing: 1px;
     font-weight: bold;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Ombra più pronunciata */
 }
 
-/* Paragrafo del sottotitolo con font più elegante */
-header p {
-    font-size: 20px;
-    margin-top: 10px;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-    font-family: 'Merriweather', serif;
-}
-
-/* Stile per la tabella dei libri */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 25px;
-    background-color: #fff;
-    border-radius: 8px;
-}
-
-/* Bordi arrotondati e sfumature per i titoli della tabella */
-th {
-    background-color: #37474F; /* Grigio scuro elegante */
-    color: white;
-    padding: 20px;
-    font-size: 18px;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-}
-
-/* Celle della tabella con bordi più morbidi */
-td {
-    padding: 15px;
-    text-align: left;
-    font-size: 16px;
-    border-bottom: 1px solid #ddd;
-    background-color: #fafafa; /* Colore più chiaro per migliorare la leggibilità */
-}
-
-tr:hover {
-    background-color: #f0f0f0; /* Effetto hover più delicato */
-}
-
-/* Pulsanti migliorati */
-button {
-    padding: 12px 25px;
-    background-color: #FF6F61; /* Colore rosso caldo, tipico delle librerie */
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 15px;
-    font-family: 'Roboto', sans-serif;
-    border-radius: 8px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-button:hover {
-    background-color: #FF3B3B; /* Effetto hover più acceso */
-    transform: translateY(-3px);
-    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
-}
-
-/* Imposta un'ombra più sottile e colori grigi per i pulsanti disabilitati */
-button:disabled {
-    background-color: #bdbdbd;
-    cursor: not-allowed;
-}
-
-/* Aggiungi margini extra intorno alla tabella */
-table, .container {
-    margin-top: 20px;
-}
-/* Stile per il campo di ricerca */
+/* Stile migliorato per il campo di ricerca */
 .search-container {
     text-align: center;
     margin-bottom: 20px;
@@ -125,10 +56,101 @@ table, .container {
 }
 
 #searchInput:focus {
-    border-color: #FF6F61; /* Cambia colore quando si seleziona il campo di ricerca */
+    border-color: #FF6F61;
     outline: none;
 }
 
+/* Tabella con intestazioni migliorate */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+/* Etichette della tabella con maggiore visibilità */
+th {
+    background-color: #37474F;
+    color: white;
+    padding: 20px;
+    font-size: 20px; /* Più visibile */
+    font-weight: bold;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Celle della tabella con uno stile migliorato */
+td {
+    padding: 15px;
+    text-align: left;
+    font-size: 18px; /* Più leggibile */
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    background-color: #fafafa;
+}
+
+/* Effetto hover più delicato */
+tr:hover {
+    background-color: #f0f0f0;
+}
+
+/* Centrare il pulsante nella colonna Azione */
+td:nth-child(5) {
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Pulsante migliorato e centrato */
+button {
+    padding: 12px 25px;
+    background-color: #FF6F61;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    font-family: 'Roboto', sans-serif;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: inline-block;
+    text-align: center;
+}
+
+/* Effetto hover per il pulsante */
+button:hover {
+    background-color: #FF3B3B;
+    transform: translateY(-3px);
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Disabilitare pulsante */
+button:disabled {
+    background-color: #bdbdbd;
+    cursor: not-allowed;
+}
+
+/* Responsive: Adattare la tabella su schermi più piccoli */
+@media screen and (max-width: 768px) {
+    table, th, td {
+        font-size: 14px; /* Ridurre le dimensioni del testo su schermi più piccoli */
+    }
+
+    /* Ridurre la larghezza del campo di ricerca */
+    #searchInput {
+        width: 80%;
+    }
+
+    header {
+        font-size: 40px; /* Ridurre le dimensioni del titolo */
+    }
+
+    button {
+        width: 100%; /* Pulsante a larghezza completa sui dispositivi mobili */
+        padding: 10px;
+    }
+}
     </style>
 </head>
 <body>
