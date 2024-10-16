@@ -4,98 +4,112 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Libreria Scolastica</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Montserrat', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #fafafa;
-            color: #333;
-            transition: background-color 0.4s ease;
-        }
+       /* Aggiorna il corpo e imposta un colore di sfondo più rilassante */
+body {
+    font-family: 'Lora', serif; /* Font più elegante */
+    background-color: #f5f3e6; /* Colore di sfondo chiaro simile alla carta */
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
 
-        .container {
-            width: 80%;
-            margin: 50px auto;
-            background-color: white;
-            padding: 30px;
-            box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
-            transition: box-shadow 0.3s ease;
-        }
+/* Contenitore centrale con bordi arrotondati */
+.container {
+    width: 80%;
+    margin: 50px auto;
+    background-color: #fff; /* Bianco puro per contrastare con il beige dello sfondo */
+    padding: 30px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1); /* Ombra più pronunciata per un effetto 3D */
+    border-radius: 12px;
+    transition: box-shadow 0.3s ease;
+}
 
-        header {
-            background-image: url('sfondo.jpeg');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 60px 0;
-            text-align: center;
-            font-size: 40px;
-            letter-spacing: 1px;
-            font-weight: bold;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-        }
+/* Header accattivante con immagine */
+header {
+    background-image: url('sfondo_libreria.jpg'); /* Cambia questa immagine con una libreria */
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+    padding: 60px 0;
+    text-align: center;
+    font-size: 45px;
+    letter-spacing: 1px;
+    font-weight: bold;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
 
-        header p {
-            font-size: 18px;
-            margin-top: 10px;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-        }
+/* Paragrafo del sottotitolo con font più elegante */
+header p {
+    font-size: 20px;
+    margin-top: 10px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    font-family: 'Merriweather', serif;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 25px;
-            background-color: #fff;
-        }
+/* Stile per la tabella dei libri */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+    background-color: #fff;
+    border-radius: 8px;
+}
 
-        table, th, td {
-            border: 1px solid #ddd;
-            transition: all 0.3s ease;
-        }
+/* Bordi arrotondati e sfumature per i titoli della tabella */
+th {
+    background-color: #37474F; /* Grigio scuro elegante */
+    color: white;
+    padding: 20px;
+    font-size: 18px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
 
-        th, td {
-            padding: 18px;
-            text-align: left;
-        }
+/* Celle della tabella con bordi più morbidi */
+td {
+    padding: 15px;
+    text-align: left;
+    font-size: 16px;
+    border-bottom: 1px solid #ddd;
+    background-color: #fafafa; /* Colore più chiaro per migliorare la leggibilità */
+}
 
-        th {
-            background-color: #607d8b;
-            color: white;
-            font-size: 18px;
-        }
+tr:hover {
+    background-color: #f0f0f0; /* Effetto hover più delicato */
+}
 
-        td {
-            font-size: 16px;
-        }
+/* Pulsanti migliorati */
+button {
+    padding: 12px 25px;
+    background-color: #FF6F61; /* Colore rosso caldo, tipico delle librerie */
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    font-family: 'Roboto', sans-serif;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
 
-        tr:hover {
-            background-color: #f1f1f1;
-            transition: background-color 0.3s ease;
-        }
+button:hover {
+    background-color: #FF3B3B; /* Effetto hover più acceso */
+    transform: translateY(-3px);
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+}
 
-        button {
-            padding: 10px 20px;
-            background-color: #607d8b;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
+/* Imposta un'ombra più sottile e colori grigi per i pulsanti disabilitati */
+button:disabled {
+    background-color: #bdbdbd;
+    cursor: not-allowed;
+}
 
-        button:hover {
-            background-color: #546e7a;
-            transform: translateY(-3px);
-            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
-        }
+/* Aggiungi margini extra intorno alla tabella */
+table, .container {
+    margin-top: 20px;
+}
 
-        button:disabled {
-            background-color: grey;
-            cursor: not-allowed;
-        }
     </style>
 </head>
 <body>
