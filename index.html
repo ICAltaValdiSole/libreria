@@ -74,7 +74,7 @@
             padding-top: 80px;
         }
 
-        /* Contenitore della barra di ricerca */
+        /* Barra di ricerca */
         .search-container {
             text-align: center;
             margin: 20px auto;
@@ -88,6 +88,7 @@
             border-radius: 25px;
             transition: all 0.3s ease;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease;
         }
 
         #searchInput:focus {
@@ -113,10 +114,12 @@
             margin: 0 10px;
             transition: all 0.3s ease;
             display: inline-block;
+            animation: fadeIn 0.8s ease;
         }
 
         .filter-btn:hover {
             background-color: #ff9900;
+            transform: scale(1.05); /* Animazione al passaggio del mouse */
         }
 
         .filter-btn.active {
@@ -129,36 +132,36 @@
             margin: 20px auto;
             background-color: white;
             padding: 30px;
-            border-radius: 12px;
+            border-radius: 15px;
             box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease;
         }
 
-        /* Tabella */
+        /* Stile della tabella */
         table {
             width: 100%;
             border-collapse: collapse;
-            text-align: left;
         }
 
         th, td {
             padding: 16px;
+            text-align: left;
             border-bottom: 1px solid #e0e0e0;
         }
 
         th {
             background-color: #333;
             color: white;
-            font-size: 18px;
             text-transform: uppercase;
             font-weight: 600;
         }
 
         td {
-            background-color: #fff;
             font-size: 16px;
+            color: #333;
         }
 
-        /* Colori personalizzati per la disponibilità */
+        /* Colori per la disponibilità */
         .disponibile {
             color: green;
             font-weight: bold;
@@ -169,7 +172,7 @@
             font-weight: bold;
         }
 
-        /* Pulsanti centrati nella colonna Azione */
+        /* Pulsanti nella colonna Azione */
         td:last-child {
             text-align: center;
         }
@@ -184,11 +187,18 @@
             font-size: 15px;
             border-radius: 25px;
             transition: all 0.3s ease;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         button:hover {
             background-color: #ff9900;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            transform: scale(1.1); /* Effetto di ingrandimento al passaggio del mouse */
+        }
+
+        /* Animazioni */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         /* Responsive */
@@ -244,7 +254,7 @@
                 <th>Titolo</th>
                 <th>Autore</th>
                 <th>Disponibilità</th>
-                <th>Azione</th>
+                <th><!-- Vuota, solo per i pulsanti --></th>
             </tr>
         </thead>
         <tbody>
@@ -263,24 +273,32 @@
         const response = await fetch(url);
         const data = await response.json();
         const libri = data.values;
+
         const tbody = document.querySelector('#libriTable tbody');
         tbody.innerHTML = '';
 
         libri.shift();
+
         libri.forEach(libro => {
             const [id, titolo, autore, disponibilita, tipo] = libro;
-            const tr = document.createElement('tr');
-            tr.setAttribute('data-tipo', tipo);
 
             const disponibilitaClass = disponibilita === 'Disponibile' ? 'disponibile' : 'in-prestito';
+
+            const tr = document.createElement('tr');
+            tr.setAttribute('data-tipo', tipo);
 
             tr.innerHTML = `
                 <td>${id}</td>
                 <td>${titolo}</td>
                 <td>${autore}</td>
-                <td id="disponibilita-${id}" class="${disponibilitaClass}">${disponibilita}</td>
-                <td><button onclick="prendiInPrestito(${id})">Prendi in Prestito</button></td>
+                <td class="${disponibilitaClass}">${disponibilita}</td>
+                <td>
+                    ${disponibilita === 'Disponibile' 
+                        ? `<button onclick="prendiInPrestito(${id})">Prendi in Prestito</button>`
+                        : `<button onclick="restituisciLibro(${id})">Restituisci</button>`}
+                </td>
             `;
+
             tbody.appendChild(tr);
         });
 
@@ -325,4 +343,5 @@
 
 </body>
 </html>
+
 
