@@ -6,204 +6,214 @@
     <title>Biblioteca Scolastica</title>
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
     <style>
-/* Reset di base */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        /* Reset di base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-/* Body */
-body {
-    font-family: 'Inter', sans-serif;
-    background: url('nonsfocato.jpg') no-repeat center center fixed;
-    background-size: cover;
-    color: #333;
-    padding: 0;
-    margin: 0;
-    position: relative;
-}
+        /* Body */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: url('nonsfocato.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+            padding: 0;
+            margin: 0;
+            position: relative;
+        }
 
-/* Sovrapposizione trasparente */
-body::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.85);
-    z-index: -1;
-}
+        /* Sovrapposizione trasparente */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.85);
+            z-index: -1;
+        }
 
-/* Barra di navigazione fissa e minimale */
-.navbar {
-    background-color: white;
-    color: #333;
-    padding: 15px 0;
-    text-align: center;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    font-weight: 700;
-    font-size: 20px;
-    font-family: 'Inter', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        /* Barra di navigazione fissa e minimale */
+        .navbar {
+            background-color: white;
+            color: #333;
+            padding: 15px 0;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            font-weight: 700;
+            font-size: 20px;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-/* Contenitore per il logo */
-.logo-container {
-    display: inline-block;
-    margin-right: 10px;
-}
+        /* Contenitore per il logo */
+        .logo-container {
+            display: inline-block;
+            margin-right: 10px;
+        }
 
-/* Stile dell'icona/logo */
-.logo {
-    width: 50px;
-    height: 50px;
-    vertical-align: middle;
-}
+        /* Stile dell'icona/logo */
+        .logo {
+            width: 50px;
+            height: 50px;
+            vertical-align: middle;
+        }
 
-/* Spazio per compensare la barra di navigazione fissa */
-body {
-    padding-top: 80px;
-}
+        /* Spazio per compensare la barra di navigazione fissa */
+        body {
+            padding-top: 80px;
+        }
 
-/* Contenitore della barra di ricerca */
-.search-container {
-    text-align: center;
-    margin: 20px auto;
-}
+        /* Contenitore della barra di ricerca */
+        .search-container {
+            text-align: center;
+            margin: 20px auto;
+        }
 
-#searchInput {
-    width: 60%;
-    padding: 12px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 25px;
-    transition: all 0.3s ease;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-}
+        #searchInput {
+            width: 60%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        }
 
-#searchInput:focus {
-    outline: none;
-    border-color: #ffcc00;
-    box-shadow: 0px 6px 20px rgba(255, 204, 0, 0.4);
-}
+        #searchInput:focus {
+            outline: none;
+            border-color: #ffcc00;
+            box-shadow: 0px 6px 20px rgba(255, 204, 0, 0.4);
+        }
 
-/* Pulsanti di filtro centrati */
-.filter-container {
-    text-align: center;
-    margin: 20px 0;
-}
+        /* Pulsanti di filtro centrati */
+        .filter-container {
+            text-align: center;
+            margin: 20px 0;
+        }
 
-.filter-btn {
-    padding: 10px 20px;
-    background-color: #fac960;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 15px;
-    border-radius: 25px;
-    margin: 0 10px;
-    transition: all 0.3s ease;
-    display: inline-block;
-}
+        .filter-btn {
+            padding: 10px 20px;
+            background-color: #fac960;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            border-radius: 25px;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
 
-.filter-btn:hover {
-    background-color: #ff9900;
-}
+        .filter-btn:hover {
+            background-color: #ff9900;
+        }
 
-.filter-btn.active {
-    background-color: #ff9900;
-}
+        .filter-btn.active {
+            background-color: #ff9900;
+        }
 
-/* Contenitore per la tabella */
-.container {
-    width: 80%;
-    margin: 20px auto;
-    background-color: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
-}
+        /* Contenitore per la tabella */
+        .container {
+            width: 85%;
+            margin: 20px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+        }
 
-/* Tabella */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-}
+        /* Tabella */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
 
-th, td {
-    padding: 16px;
-    border-bottom: 1px solid #e0e0e0;
-    text-align: left;
-}
+        th, td {
+            padding: 16px;
+            border-bottom: 1px solid #e0e0e0;
+        }
 
-th {
-    background-color: #333;
-    color: white;
-    font-size: 18px;
-    text-transform: uppercase;
-    font-weight: 600;
-}
+        th {
+            background-color: #333;
+            color: white;
+            font-size: 18px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
 
-td {
-    background-color: #fff;
-    font-size: 16px;
-}
+        td {
+            background-color: #fff;
+            font-size: 16px;
+        }
 
-/* Pulsanti centrati nella colonna Azione */
-td:last-child {
-    text-align: center;
-}
+        /* Colori personalizzati per la disponibilità */
+        .disponibile {
+            color: green;
+            font-weight: bold;
+        }
 
-/* Pulsanti gialli */
-button {
-    padding: 10px 20px;
-    background-color: #fac960;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 15px;
-    border-radius: 25px;
-    transition: all 0.3s ease;
-}
+        .in-prestito {
+            color: red;
+            font-weight: bold;
+        }
 
-button:hover {
-    background-color: #ff9900;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-}
+        /* Pulsanti centrati nella colonna Azione */
+        td:last-child {
+            text-align: center;
+        }
 
-/* Responsive */
-@media screen and (max-width: 768px) {
-    #searchInput {
-        width: 90%;
-    }
+        /* Pulsanti gialli */
+        button {
+            padding: 10px 20px;
+            background-color: #fac960;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
 
-    table, th, td {
-        font-size: 14px;
-    }
+        button:hover {
+            background-color: #ff9900;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
 
-    button {
-        width: 100%;
-    }
+        /* Responsive */
+        @media screen and (max-width: 768px) {
+            #searchInput {
+                width: 90%;
+            }
 
-    .navbar h1 {
-        font-size: 20px;
-    }
+            table, th, td {
+                font-size: 14px;
+            }
 
-    .logo {
-        width: 30px;
-        height: 30px;
-    }
-}
+            button {
+                width: 100%;
+            }
+
+            .navbar h1 {
+                font-size: 20px;
+            }
+
+            .logo {
+                width: 30px;
+                height: 30px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -244,70 +254,49 @@ button:hover {
 </div>
 
 <script>
-    // ID del foglio di Google Sheets
     const sheetId = '1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ';
-    
-    // API key del progetto Google Cloud
     const apiKey = 'AIzaSyCBAMHlMKwdPs8hlvRnxxNOWwdXxqnKC3k';
-
-    // URL per ottenere i dati dal foglio Google Sheets
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/libreriaprincipale?key=${apiKey}`;
+    let tipoFiltrato = 'Tutti';
 
-    let tipoFiltrato = 'Tutti'; // Variabile per tenere traccia del filtro selezionato
-
-    // Funzione per caricare i libri e DVD dal Google Sheets
     async function caricaLibri() {
         const response = await fetch(url);
         const data = await response.json();
         const libri = data.values;
-
-        // Seleziona il corpo della tabella dove verranno inseriti i dati
         const tbody = document.querySelector('#libriTable tbody');
-        tbody.innerHTML = ''; // Pulisce la tabella prima di aggiungere nuovi dati
+        tbody.innerHTML = '';
 
-        // Rimuoviamo la prima riga poiché contiene i nomi delle colonne
         libri.shift();
-
         libri.forEach(libro => {
             const [id, titolo, autore, disponibilita, tipo] = libro;
-
-            // Creiamo una nuova riga nella tabella per ogni libro/DVD
             const tr = document.createElement('tr');
-            tr.setAttribute('data-tipo', tipo); // Attributo personalizzato per il tipo (Libro/DVD)
+            tr.setAttribute('data-tipo', tipo);
 
-            // Creiamo le celle per ID, Titolo, Autore, Disponibilità e Azione
+            const disponibilitaClass = disponibilita === 'Disponibile' ? 'disponibile' : 'in-prestito';
+
             tr.innerHTML = `
                 <td>${id}</td>
                 <td>${titolo}</td>
                 <td>${autore}</td>
-                <td id="disponibilita-${id}">${disponibilita}</td>
-                <td>
-                    ${disponibilita === 'Disponibile' 
-                        ? `<button onclick="prendiInPrestito(${id})">Prendi in Prestito</button>`
-                        : `<button onclick="restituisciLibro(${id})">Restituisci</button>`}
-                </td>
+                <td id="disponibilita-${id}" class="${disponibilitaClass}">${disponibilita}</td>
+                <td><button onclick="prendiInPrestito(${id})">Prendi in Prestito</button></td>
             `;
-
-            // Aggiungiamo la riga alla tabella
             tbody.appendChild(tr);
         });
 
-        filtraLibri(); // Applica il filtro alla fine
+        filtraLibri();
     }
 
-    // Funzione per aprire il modulo di prestito con l'ID del libro precompilato
     function prendiInPrestito(idLibro) {
         const urlModuloPrestito = `https://docs.google.com/forms/d/e/1FAIpQLScUNgMUgKa_URu74Ju3G1HZXDMVlNMzX1D2egxB7Ut34wzIqg/viewform?entry.1518254211=${idLibro}`;
         window.open(urlModuloPrestito, '_blank');
     }
 
-    // Funzione per aprire il modulo di restituzione con l'ID del libro precompilato
     function restituisciLibro(idLibro) {
         const urlModuloRestituzione = `https://docs.google.com/forms/d/e/1FAIpQLSfqR3bdauSlexTrCqcPnn05kjbOnE4utylDPUoIdRHqheSYCg/viewform?entry.300178690=${idLibro}`;
         window.open(urlModuloRestituzione, '_blank');
     }
 
-    // Funzione per filtrare i libri in base al titolo, autore e tipo
     function filtraLibri() {
         const input = document.getElementById("searchInput").value.toLowerCase();
         const tr = document.querySelectorAll("#libriTable tbody tr");
@@ -324,17 +313,16 @@ button:hover {
         });
     }
 
-    // Funzione per filtrare per tipo (Libri/DVD)
     function filtraPerTipo(tipo) {
-        tipoFiltrato = tipo; // Aggiorna il tipo di filtro
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active')); // Rimuovi lo stato attivo da tutti i pulsanti
-        document.querySelector(`button[onclick="filtraPerTipo('${tipo}')"]`).classList.add('active'); // Aggiungi lo stato attivo al pulsante cliccato
-        filtraLibri(); // Applica il filtro
+        tipoFiltrato = tipo;
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`button[onclick="filtraPerTipo('${tipo}')"]`).classList.add('active');
+        filtraLibri();
     }
 
-    // Carichiamo i libri e i DVD appena la pagina viene caricata
     caricaLibri();
 </script>
 
 </body>
 </html>
+
