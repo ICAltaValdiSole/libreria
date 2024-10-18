@@ -141,12 +141,16 @@
         table {
             width: 100%;
             border-collapse: collapse;
-        }
+            table-layout: fixed; /* Aggiungi questa regola per gestire la larghezza */
+            text-align: left;
+            }
 
         th, td {
             padding: 16px;
-            text-align: left;
             border-bottom: 1px solid #e0e0e0;
+            text-align: left;
+            word-wrap: break-word; /* Permette il ritorno a capo */
+            white-space: normal;
         }
 
         th {
@@ -156,9 +160,10 @@
             font-weight: 600;
         }
 
-        td {
+       td {
+            background-color: #fff;
             font-size: 16px;
-            color: #333;
+            max-width: 200px; /* Imposta la larghezza massima delle celle */
         }
 
         /* Colori per la disponibilità */
