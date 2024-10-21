@@ -6,229 +6,193 @@
     <title>Biblioteca Scolastica</title>
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Reset di base */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      /* Reset di base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        /* Body */
-        body {
-            font-family: 'Inter', sans-serif;
-            background: url('nonsfocato.jpg') no-repeat center center fixed;
-            background-size: cover;
-            color: #333;
-            padding: 0;
-            margin: 0;
-            position: relative;
-        }
+/* Body */
+body {
+    font-family: 'Lora', serif;
+    background-color: #f9f9f9;
+    color: #333;
+    padding: 0;
+    margin: 0;
+    position: relative;
+}
 
-        /* Sovrapposizione trasparente */
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.85);
-            z-index: -1;
-        }
+/* Barra di navigazione fissa con sfondo bianco */
+.navbar {
+    background-color: #ffffff; /* Sfondo bianco */
+    color: #000000;
+    padding: 20px;
+    text-align: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    font-weight: 700;
+    font-size: 24px;
+    font-family: 'Merriweather', serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Leggera ombra sotto la barra */
+    border-bottom: 1px solid #e6e6e6;
+}
 
-        /* Barra di navigazione fissa e minimale */
-        .navbar {
-            background-color: white;
-            color: #333;
-            padding: 15px 0;
-            text-align: center;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            font-weight: 700;
-            font-size: 20px;
-            font-family: 'Inter', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+.logo-container {
+    margin-right: 15px;
+}
 
-        /* Contenitore per il logo */
-        .logo-container {
-            display: inline-block;
-            margin-right: 10px;
-        }
+.logo {
+    width: 40px;
+    height: 40px;
+}
 
-        /* Stile dell'icona/logo */
-        .logo {
-            width: 50px;
-            height: 50px;
-            vertical-align: middle;
-        }
+body {
+    padding-top: 100px;
+}
 
-        /* Spazio per compensare la barra di navigazione fissa */
-        body {
-            padding-top: 80px;
-        }
+/* Barra di ricerca minimalista */
+.search-container {
+    text-align: center;
+    margin: 50px auto;
+}
 
-        /* Barra di ricerca */
-        .search-container {
-            text-align: center;
-            margin: 20px auto;
-        }
+#searchInput {
+    width: 50%;
+    padding: 18px;
+    font-size: 18px;
+    border: 1px solid #ddd;
+    border-radius: 40px;
+    transition: all 0.3s ease;
+    background-color: #f1f1f1;
+}
 
-        #searchInput {
-            width: 60%;
-            padding: 12px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 1s ease;
-        }
+#searchInput:focus {
+    outline: none;
+    border-color: #fac960;
+    box-shadow: none;
+}
 
-        #searchInput:focus {
-            outline: none;
-            border-color: #ffcc00;
-            box-shadow: 0px 6px 20px rgba(255, 204, 0, 0.4);
-        }
+/* Pulsanti di filtro con look pulito */
+.filter-container {
+    text-align: center;
+    margin: 40px 0;
+}
 
-        /* Pulsanti di filtro centrati */
-        .filter-container {
-            text-align: center;
-            margin: 20px 0;
-        }
+.filter-btn {
+    padding: 12px 30px;
+    background-color: transparent;
+    color: #333;
+    border: 2px solid #fac960;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 40px;
+    margin: 0 10px;
+    transition: all 0.3s ease;
+}
 
-        .filter-btn {
-            padding: 10px 20px;
-            background-color: #fac960;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 15px;
-            border-radius: 25px;
-            margin: 0 10px;
-            transition: all 0.3s ease;
-            display: inline-block;
-            animation: fadeIn 0.8s ease;
-        }
+.filter-btn:hover {
+    background-color: #ffcc00;
+    color: white;
+    border-color: #ffcc00;
+}
 
-        .filter-btn:hover {
-            background-color: #ff9900;
-            transform: scale(1.05); /* Animazione al passaggio del mouse */
-        }
+.filter-btn.active {
+    background-color: #ffcc00;
+    color: white;
+    border-color: #ffcc00;
+}
 
-        .filter-btn.active {
-            background-color: #ff9900;
-        }
+/* Container minimalista per la tabella */
+.container {
+    width: 85%;
+    margin: 50px auto;
+    background-color: white;
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+}
 
-        /* Contenitore per la tabella */
-        .container {
-            width: 85%;
-            margin: 20px auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 1s ease;
-        }
+/* Stile della tabella, con linee più sottili e spazio bianco */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    text-align: left;
+}
 
-        /* Stile della tabella */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed; /* Aggiungi questa regola per gestire la larghezza */
-            text-align: left;
-            }
+th, td {
+    padding: 20px;
+    border-bottom: 1px solid #f1f1f1;
+    text-align: left;
+    word-wrap: break-word;
+}
 
-        th, td {
-            padding: 16px;
-            border-bottom: 1px solid #e0e0e0;
-            text-align: left;
-            word-wrap: break-word; /* Permette il ritorno a capo */
-            white-space: normal;
-        }
+th {
+    background-color: transparent;
+    color: #333;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 14px;
+}
 
-        th {
-            background-color: #333;
-            color: white;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
+td {
+    background-color: #fff;
+    font-size: 16px;
+    color: #555;
+}
 
-       td {
-            background-color: #fff;
-            font-size: 16px;
-            max-width: 200px; /* Imposta la larghezza massima delle celle */
-        }
+/* Pulsanti interattivi all'interno della tabella */
+td:last-child {
+    text-align: center;
+}
 
-        /* Colori per la disponibilità */
-        .disponibile {
-            color: green;
-            font-weight: bold;
-        }
+button {
+    padding: 10px 25px;
+    background-color: #fac960;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 40px;
+    transition: all 0.3s ease;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+}
 
-        .in-prestito {
-            color: red;
-            font-weight: bold;
-        }
+button:hover {
+    background-color: #ffcc00;
+    transform: scale(1.05);
+}
 
-        /* Pulsanti nella colonna Azione */
-        td:last-child {
-            text-align: center;
-        }
+/* Responsive */
+@media screen and (max-width: 768px) {
+    #searchInput {
+        width: 90%;
+        font-size: 16px;
+    }
 
-        /* Pulsanti gialli */
-        button {
-            padding: 10px 20px;
-            background-color: #fac960;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 15px;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        }
+    .container {
+        padding: 30px;
+    }
 
-        button:hover {
-            background-color: #ff9900;
-            transform: scale(1.1); /* Effetto di ingrandimento al passaggio del mouse */
-        }
+    table, th, td {
+        font-size: 14px;
+    }
 
-        /* Animazioni */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+    button {
+        padding: 8px 20px;
+    }
 
-        /* Responsive */
-        @media screen and (max-width: 768px) {
-            #searchInput {
-                width: 90%;
-            }
-
-            table, th, td {
-                font-size: 14px;
-            }
-
-            button {
-                width: 100%;
-            }
-
-            .navbar h1 {
-                font-size: 20px;
-            }
-
-            .logo {
-                width: 30px;
-                height: 30px;
-            }
-        }
+    .navbar {
+        font-size: 18px;
+    }
+}
     </style>
 </head>
 <body>
