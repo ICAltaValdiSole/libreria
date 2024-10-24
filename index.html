@@ -7,28 +7,34 @@
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
-    html { overflow-x: hidden; }
-    body {
+    :root {
+  --motion-ease: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+  --motion-duration: 0.3s;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+    html, body {
         margin: 0;
         padding: 0;
+        width: 100%;
+        height: 100%;
         font-family: 'Source Sans Pro', sans-serif;
-        font-size: 19px;
-        line-height: 1.6em;
+        background: #f9f9f9;
         overflow-x: hidden;
-        background: url('nonsfocato.jpg') no-repeat center center fixed;
-        background-size: cover;
     }
 
-    /* Sidebar Styles */
     .tm-header {
-        background-color: #35424a; /* Dark grey-blue */
+        background-color: #35424a;
         color: white;
         position: fixed;
         top: 0;
         left: 0;
         bottom: 0;
         z-index: 100;
-        width: 300px; /* Sidebar width */
+        width: 300px;
         overflow-y: auto;
         transition: left 0.3s;
     }
@@ -51,11 +57,20 @@
 
     .tm-nav {
         padding: 30px;
-        text-align: center; /* Center the navigation items */
+        text-align: center;
     }
 
-    .tm-site-logo {
-        margin-bottom: 15px;
+    .tm-site-logo img {
+        display: block;
+        margin: 0 auto;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        transition: transform 0.5s ease;
+    }
+
+    .tm-site-logo img:hover {
+        transform: rotate(360deg);
     }
 
     .tm-nav-link {
@@ -64,18 +79,36 @@
         display: block;
         padding: 10px 20px;
         font-size: 1.4rem;
-        transition: background-color 0.3s;
-        margin: 5px 0; /* Space between links */
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        transition: color 0.5s;
     }
 
-    .tm-nav-link:hover,
-    .tm-nav-link.active {
-        color: white;
+    .tm-nav-link::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
         background-color: #fac960;
+        transition: all 0.5s;
+        border-radius: 50%;
+        z-index: -1;
+        transform: scale(0.5);
+    }
+
+    .tm-nav-link:hover::before {
+        transform: scale(1.5);
+        left: -10%;
+    }
+
+    .tm-nav-link:hover {
+        color: #35424a;
         text-decoration: none;
     }
 
-    /* Main content styles */
     .tm-main {
         margin-left: 300px;
         padding: 50px;
@@ -100,24 +133,66 @@
     }
 
     #libriTable .id-column {
-        display: none; /* Hide ID column */
+        display: none;
     }
 
-    .button {
-        padding: 8px 15px;
-        border: none;
-        border-radius: 5px;
-        background-color: #4CAF50;
-        color: white;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
+    button {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 500;
+  line-height: 1;
+  padding: 1em 1.5em;
+  position: relative;
+  transition: filter var(--motion-duration);
+}
 
-    .button:hover {
-        background-color: #45a049;
-    }
+button:hover {
+  filter: brightness(1.1);
+}
 
+button:active {
+  filter: brightness(0.9);
+}
+
+button > span {
+  display: block;
+  position: relative;
+  transition: transform var(--motion-duration) var(--motion-ease);
+  z-index: 1;
+}
+
+button:hover > span {
+  transform: scale(1.05);
+}
+
+button:active > span {
+  transform: scale(0.95);
+}
+
+button > svg {
+  fill: #fac960;
+  position: absolute;
+  top: -5%;
+  left: -5%;
+  width: 110%;
+  height: 110%;
+}
+
+button > svg > path {
+  transition: var(--motion-duration) var(--motion-ease);
+}
+
+button:hover > svg > path {
+  d: path("M0,0 C0,-5 100,-5 100,0 C105,0 105,100 100,100 C100,105 0,105 0,100 C-5,100 -5,0 0,0");
+}
+
+button:active > svg > path {
+  d: path("M0,0 C30,10 70,10 100,0 C95,30 95,70 100,100 C70,90 30,90 0,100 C5,70 5,30 0,0");
+}
     </style>
 </head>
 <body>
@@ -125,7 +200,7 @@
 <div class="tm-header">
     <div class="tm-nav">
         <div class="tm-site-logo">
-            <img src="Logo.png" alt="Logo Scuola" style="width: 50px; height: 50px; border-radius: 50%;">
+            <img src="Logo.png" alt="Logo Scuola">
         </div>
         <h1 style="color: white; padding: 20px; text-align: center;">Biblioteca I.C. Alta Val di Sole</h1>
         <a href="#" class="tm-nav-link active" data-filter="Tutti">Tutti</a>
@@ -204,8 +279,13 @@ function caricaLibri() {
                 <td class="${disponibilitaClass}">${disponibilita}</td>
                 <td>
                     ${disponibilita === 'Disponibile' 
-                        ? `<button class="button" onclick="prendiInPrestito(${id})">Prendi in Prestito</button>`
-                        : `<button class="button" onclick="restituisciLibro(${id})">Restituisci</button>`}
+                        ? `<button onclick="prendiInPrestito(${id})"><span>Prendi in prestito</span>
+                        <svg viewBox="-5 -5 110 110" preserveAspectRatio="none" aria-hidden="true">
+                        <path d="M0,0 C0,0 100,0 100,0 C100,0 100,100 100,100 C100,100 0,100 0,100 C0,100 0,0 0,0"/>
+                            </svg></button>`
+                        : `<button onclick="restituisciLibro(${id})"><span>Restituisci</span><svg viewBox="-5 -5 110 110" preserveAspectRatio="none" aria-hidden="true">
+                        <path d="M0,0 C0,0 100,0 100,0 C100,0 100,100 100,100 C100,100 0,100 0,100 C0,100 0,0 0,0"/>
+                            </svg></button>`}
                 </td>
             `;
             tbody.appendChild(tr);
@@ -236,4 +316,3 @@ function restituisciLibro(idLibro) {
 
 </body>
 </html>
-
