@@ -51,6 +51,11 @@
 
     .tm-nav {
         padding: 30px;
+        text-align: center; /* Center the navigation items */
+    }
+
+    .tm-site-logo {
+        margin-bottom: 15px;
     }
 
     .tm-nav-link {
@@ -60,6 +65,7 @@
         padding: 10px 20px;
         font-size: 1.4rem;
         transition: background-color 0.3s;
+        margin: 5px 0; /* Space between links */
     }
 
     .tm-nav-link:hover,
@@ -93,6 +99,25 @@
         color: white;
     }
 
+    #libriTable .id-column {
+        display: none; /* Hide ID column */
+    }
+
+    .button {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 5px;
+        background-color: #4CAF50;
+        color: white;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .button:hover {
+        background-color: #45a049;
+    }
+
     </style>
 </head>
 <body>
@@ -116,7 +141,7 @@
     <table id="libriTable">
         <thead>
             <tr>
-                <th>ID</th>
+                <th class="id-column">ID</th>
                 <th>Titolo</th>
                 <th>Autore</th>
                 <th>Disponibilità</th>
@@ -160,7 +185,7 @@ $(function() {
 });
 
 function caricaLibri() {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ/values/libreriaprincipale?key=AIzaSyCBAMHlMKwdPs8hlvRnxxNOWwdXxqnKC3k`;
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ/values/libreriaprincipale?key=YOUR_API_KEY`;
     fetch(url)
     .then(response => response.json())
     .then(data => {
@@ -173,14 +198,14 @@ function caricaLibri() {
             const tr = document.createElement('tr');
             tr.setAttribute('data-type', tipo);
             tr.innerHTML = `
-                <td>${id}</td>
+                <td class="id-column">${id}</td>
                 <td>${titolo}</td>
                 <td>${autore}</td>
                 <td class="${disponibilitaClass}">${disponibilita}</td>
                 <td>
                     ${disponibilita === 'Disponibile' 
-                        ? `<button onclick="prendiInPrestito(${id})">Prendi in Prestito</button>`
-                        : `<button onclick="restituisciLibro(${id})">Restituisci</button>`}
+                        ? `<button class="button" onclick="prendiInPrestito(${id})">Prendi in Prestito</button>`
+                        : `<button class="button" onclick="restituisciLibro(${id})">Restituisci</button>`}
                 </td>
             `;
             tbody.appendChild(tr);
