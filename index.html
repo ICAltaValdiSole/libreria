@@ -15,7 +15,7 @@
     <div class="tm-header-wrapper">
         <div class="tm-site-header">
             <div class="tm-site-logo">
-                <i class="fas fa-book"></i>
+                <img src="Logo.png" alt="Logo Scuola"> <!-- Inserisci il percorso corretto -->
             </div>
             <h1 class="text-white">Biblioteca Scolastica I.C. Alta Val di Sole</h1>
         </div>
@@ -25,18 +25,19 @@
                     <i class="fas fa-home"></i>
                     Home
                 </a></li>
-                <li class="tm-nav-item"><a href="#" class="tm-nav-link">
+                <li class="tm-nav-item"><a href="#" class="tm-nav-link" onclick="filtraPerTipo('Libro')">
                     <i class="fas fa-book-open"></i>
-                    Filtri: Libri
+                    Libri
                 </a></li>
-                <li class="tm-nav-item"><a href="#" class="tm-nav-link">
+                <li class="tm-nav-item"><a href="#" class="tm-nav-link" onclick="filtraPerTipo('DVD')">
                     <i class="fas fa-film"></i>
-                    Filtri: DVD
+                    DVD
                 </a></li>
             </ul>
         </nav>
     </div>
 </header>
+
 
 <!-- Main Content -->
 <div class="tm-main">
@@ -113,7 +114,12 @@
         const urlModuloPrestito = `https://docs.google.com/forms/d/e/1FAIpQLScUNgMUgKa_URu74Ju3G1HZXDMVlNMzX1D2egxB7Ut34wzIqg/viewform?entry.1518254211=${idLibro}`;
         window.open(urlModuloPrestito, '_blank');
     }
-
+    
+    function filtraPerTipo(tipo) {
+    tipoFiltrato = tipo;
+    filtraLibri();  // Chiama il filtro della ricerca per aggiornare la vista
+    }
+    
     function filtraLibri() {
         const input = document.getElementById("searchInput").value.toLowerCase();
         const tr = document.querySelectorAll("#libriTable tbody tr");
