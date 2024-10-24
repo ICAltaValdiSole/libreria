@@ -4,253 +4,115 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biblioteca Scolastica</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
-    /* Reset di base */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Body */
-body {
-    font-family: 'Lora', serif;
-    background: url('nonsfocato.jpg') no-repeat center center fixed;
-    background-size: cover;
-    color: #333;
-    padding: 0;
-    margin: 0;
-    position: relative;
-}
-
-/* Sovrapposizione trasparente con immagine sfocata */
-body::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.85); /* Leggera trasparenza */
-    backdrop-filter: blur(3px); /* Effetto sfocato */
-    z-index: -1;
-}
-
-/* Barra di navigazione fissa con sfondo bianco */
-.navbar {
-    background-color: #ffffff; /* Sfondo bianco */
-    color: #000000;
-    padding: 20px;
-    text-align: center;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    font-weight: 700;
-    font-size: 24px;
-    font-family: 'Merriweather', serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Leggera ombra sotto la barra */
-    border-bottom: 1px solid #e6e6e6;
-}
-
-.logo-container {
-    margin-right: 15px;
-}
-
-.logo {
-    width: 40px;
-    height: 40px;
-}
-
-body {
-    padding-top: 100px;
-}
-
-/* Barra di ricerca minimalista */
-.search-container {
-    text-align: center;
-    margin: 50px auto;
-}
-
-#searchInput {
-    width: 50%;
-    padding: 18px;
-    font-size: 18px;
-    border: 1px solid #ddd;
-    border-radius: 40px;
-    transition: all 0.3s ease;
-    background-color: #FFFFFF;
-}
-
-#searchInput:focus {
-    outline: none;
-    border-color: #fac960;
-    box-shadow: none;
-}
-
-/* Pulsanti di filtro con look pulito e icone */
-.filter-container {
-    text-align: center;
-    margin: 40px 0;
-}
-
-.filter-btn {
-    padding: 12px 30px;
-    background-color: #FFFFFF;
-    color: #333;
-    border: 2px solid #fac960;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 40px;
-    margin: 0 10px;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-}
-
-.filter-btn img {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px; /* Spazio per l'icona */
-}
-
-.filter-btn:hover {
-    background-color: #ffcc00;
-    color: white;
-    border-color: #ffcc00;
-}
-
-.filter-btn.active {
-    background-color: #ffcc00;
-    color: white;
-    border-color: #ffcc00;
-}
-
-/* Container minimalista per la tabella */
-.container {
-    width: 85%;
-    margin: 50px auto;
-    background-color: white;
-    padding: 50px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-/* Stile della tabella, con linee più sottili e spazio bianco */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-    text-align: left;
-}
-
-th, td {
-    padding: 20px;
-    border-bottom: 1px solid #f1f1f1;
-    text-align: left;
-    word-wrap: break-word;
-}
-
-th {
-    background-color: transparent;
-    color: #333;
-    text-transform: uppercase;
-    font-weight: 600;
-    font-size: 14px;
-}
-
-td {
-    background-color: #fff;
-    font-size: 16px;
-    color: #555;
-}
-
-/* Colore dinamico per la disponibilità */
-.disponibile {
-    color: green;
-    font-weight: bold;
-}
-
-.in-prestito {
-    color: red;
-    font-weight: bold;
-}
-
-/* Pulsanti interattivi all'interno della tabella */
-td:last-child {
-    text-align: center;
-}
-
-button {
-    padding: 10px 25px;
-    background-color: #fac960;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    border-radius: 40px;
-    transition: all 0.3s ease;
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
-}
-
-button:hover {
-    background-color: #ffcc00;
-    transform: scale(1.05);
-}
-
-/* Responsive */
-@media screen and (max-width: 768px) {
-    #searchInput {
-        width: 90%;
-        font-size: 16px;
+    html { overflow-x: hidden; }
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-size: 19px;
+        line-height: 1.6em;
+        overflow-x: hidden;
+        background: url('nonsfocato.jpg') no-repeat center center fixed;
+        background-size: cover;
     }
 
-    .container {
+    /* Sidebar Styles */
+    .tm-header {
+        background-color: #35424a; /* Dark grey-blue */
+        color: white;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 100;
+        width: 300px; /* Sidebar width */
+        overflow-y: auto;
+        transition: left 0.3s;
+    }
+
+    .tm-header.show {
+        left: 0;
+    }
+
+    .navbar-toggler {
+        display: block;
+        position: fixed;
+        left: 10px;
+        top: 10px;
+        background-color: #35424a;
+        color: white;
+        padding: 10px 15px;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .tm-nav {
         padding: 30px;
     }
 
-    table, th, td {
-        font-size: 14px;
+    .tm-nav-link {
+        color: white;
+        background-color: transparent;
+        display: block;
+        padding: 10px 20px;
+        font-size: 1.4rem;
+        transition: background-color 0.3s;
     }
 
-    button {
-        padding: 8px 20px;
+    .tm-nav-link:hover,
+    .tm-nav-link.active {
+        color: white;
+        background-color: #fac960;
+        text-decoration: none;
     }
 
-    .navbar {
-        font-size: 18px;
+    /* Main content styles */
+    .tm-main {
+        margin-left: 300px;
+        padding: 50px;
+        background-color: #f9f9f9;
+        min-height: 100vh;
     }
-}
+
+    #libriTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #libriTable th, #libriTable td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    #libriTable th {
+        background-color: #35424a;
+        color: white;
+    }
 
     </style>
 </head>
 <body>
-<!-- Barra di navigazione fissa -->
-<header class="navbar">
-    <div class="logo-container">
-        <img src="Logo.png" alt="Logo Scuola" class="logo">
+<div class="navbar-toggler">☰</div>
+<div class="tm-header">
+    <div class="tm-nav">
+        <div class="tm-site-logo">
+            <img src="Logo.png" alt="Logo Scuola" style="width: 50px; height: 50px; border-radius: 50%;">
+        </div>
+        <h1 style="color: white; padding: 20px; text-align: center;">Biblioteca I.C. Alta Val di Sole</h1>
+        <a href="#" class="tm-nav-link active" data-filter="Tutti">Tutti</a>
+        <a href="#" class="tm-nav-link" data-filter="Libro">Libri</a>
+        <a href="#" class="tm-nav-link" data-filter="DVD">DVD</a>
     </div>
-    <h1 class="animate__animated animate__bounce">Biblioteca Scolastica I.C. Alta Val di Sole</h1>
-</header>
-
-<div class="search-container">
-    <input type="text" id="searchInput" placeholder="Cerca per titolo o autore..." onkeyup="filtraLibri()">
 </div>
 
-<!-- Pulsanti di filtro centrati -->
-<div class="filter-container">
-    <button class="filter-btn active" onclick="filtraPerTipo('Tutti')">Tutti</button>
-    <button class="filter-btn" onclick="filtraPerTipo('Libro')"><img src="book.png" alt="Libri"> Libri</button>
-    <button class="filter-btn" onclick="filtraPerTipo('DVD')"><img src="dvd.png" alt="DVD"> DVD</button>
-</div>
-
-<div class="container">
+<div class="tm-main">
+    <div style="margin-bottom: 20px;">
+        <input type="text" id="searchInput" placeholder="Cerca per titolo o autore..." style="width: 100%; padding: 10px; font-size: 1.2rem;">
+    </div>
     <table id="libriTable">
         <thead>
             <tr>
@@ -258,7 +120,7 @@ button:hover {
                 <th>Titolo</th>
                 <th>Autore</th>
                 <th>Disponibilità</th>
-                <th><!-- Vuota, solo per i pulsanti --></th>
+                <th>Azione</th>
             </tr>
         </thead>
         <tbody>
@@ -267,30 +129,49 @@ button:hover {
     </table>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    const sheetId = '1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ';
-    const apiKey = 'AIzaSyCBAMHlMKwdPs8hlvRnxxNOWwdXxqnKC3k';
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/libreriaprincipale?key=${apiKey}`;
-    let tipoFiltrato = 'Tutti';
+$(function() {
+    $('.navbar-toggler').on('click', function() {
+        $('.tm-header').toggleClass('show');
+    });
 
-    async function caricaLibri() {
-        const response = await fetch(url);
-        const data = await response.json();
+    $('.tm-nav-link').click(function() {
+        $('.tm-nav-link').removeClass('active');
+        $(this).addClass('active');
+        var filter = $(this).data('filter');
+        filterBooks(filter);
+    });
+
+    $('html').click(function(event) {
+        if (!$(event.target).closest('.tm-header, .navbar-toggler').length) {
+            $('.tm-header').removeClass('show');
+        }
+    });
+
+    $('#searchInput').on('keyup', function() {
+        var value = $(this).val().toLowerCase();
+        $('#libriTable tbody tr').filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+
+    caricaLibri();
+});
+
+function caricaLibri() {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ/values/libreriaprincipale?key=AIzaSyCBAMHlMKwdPs8hlvRnxxNOWwdXxqnKC3k`;
+    fetch(url)
+    .then(response => response.json())
+    .then(data => {
         const libri = data.values;
-
         const tbody = document.querySelector('#libriTable tbody');
-        tbody.innerHTML = '';
-
-        libri.shift();
-
+        libri.shift(); // remove the header row
         libri.forEach(libro => {
             const [id, titolo, autore, disponibilita, tipo] = libro;
-
             const disponibilitaClass = disponibilita === 'Disponibile' ? 'disponibile' : 'in-prestito';
-
             const tr = document.createElement('tr');
-            tr.setAttribute('data-tipo', tipo);
-
+            tr.setAttribute('data-type', tipo);
             tr.innerHTML = `
                 <td>${id}</td>
                 <td>${titolo}</td>
@@ -302,47 +183,30 @@ button:hover {
                         : `<button onclick="restituisciLibro(${id})">Restituisci</button>`}
                 </td>
             `;
-
             tbody.appendChild(tr);
         });
+    });
+}
 
-        filtraLibri();
+function filterBooks(filter) {
+    var allRows = $('#libriTable tbody tr');
+    allRows.hide();
+    if (filter === 'Tutti') {
+        allRows.show();
+    } else {
+        allRows.filter('[data-type="' + filter + '"]').show();
     }
+}
 
-    function prendiInPrestito(idLibro) {
-        const urlModuloPrestito = `https://docs.google.com/forms/d/e/1FAIpQLScUNgMUgKa_URu74Ju3G1HZXDMVlNMzX1D2egxB7Ut34wzIqg/viewform?entry.1518254211=${idLibro}`;
-        window.open(urlModuloPrestito, '_blank');
-    }
+function prendiInPrestito(idLibro) {
+    const urlModuloPrestito = `https://docs.google.com/forms/d/e/1FAIpQLScUNgMUgKa_URu74Ju3G1HZXDMVlNMzX1D2egxB7Ut34wzIqg/viewform?entry.1518254211=${idLibro}`;
+    window.open(urlModuloPrestito, '_blank');
+}
 
-    function restituisciLibro(idLibro) {
-        const urlModuloRestituzione = `https://docs.google.com/forms/d/e/1FAIpQLSfqR3bdauSlexTrCqcPnn05kjbOnE4utylDPUoIdRHqheSYCg/viewform?entry.300178690=${idLibro}`;
-        window.open(urlModuloRestituzione, '_blank');
-    }
-
-    function filtraLibri() {
-        const input = document.getElementById("searchInput").value.toLowerCase();
-        const tr = document.querySelectorAll("#libriTable tbody tr");
-
-        tr.forEach(row => {
-            const tdTitolo = row.cells[1].textContent.toLowerCase();
-            const tdAutore = row.cells[2].textContent.toLowerCase();
-            const tipo = row.getAttribute('data-tipo');
-            
-            const matchText = tdTitolo.includes(input) || tdAutore.includes(input);
-            const matchTipo = tipoFiltrato === 'Tutti' || tipoFiltrato === tipo;
-
-            row.style.display = (matchText && matchTipo) ? "" : "none";
-        });
-    }
-
-    function filtraPerTipo(tipo) {
-        tipoFiltrato = tipo;
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelector(`button[onclick="filtraPerTipo('${tipo}')"]`).classList.add('active');
-        filtraLibri();
-    }
-
-    caricaLibri();
+function restituisciLibro(idLibro) {
+    const urlModuloRestituzione = `https://docs.google.com/forms/d/e/1FAIpQLSfqR3bdauSlexTrCqcPnn05kjbOnE4utylDPUoIdRHqheSYCg/viewform?entry.300178690=${idLibro}`;
+    window.open(urlModuloRestituzione, '_blank');
+}
 </script>
 
 </body>
