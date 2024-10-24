@@ -3,271 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biblioteca Scolastica</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <style>
-    /* Reset di base */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Body */
-body {
-    font-family: 'Lora', serif;
-    background: url('nonsfocato.jpg') no-repeat center center fixed;
-    background-size: cover;
-    color: #333;
-    padding: 0;
-    margin: 0;
-    position: relative;
-}
-
-/* Sovrapposizione trasparente con immagine sfocata */
-body::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.85); /* Leggera trasparenza */
-    backdrop-filter: blur(3px); /* Effetto sfocato */
-    z-index: -1;
-}
-
-/* Barra di navigazione fissa con sfondo bianco */
-.navbar {
-    background-color: #ffffff; /* Sfondo bianco */
-    color: #000000;
-    padding: 20px;
-    text-align: center;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    font-weight: 700;
-    font-size: 24px;
-    font-family: 'Merriweather', serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Leggera ombra sotto la barra */
-    border-bottom: 1px solid #e6e6e6;
-}
-
-.logo-container {
-    margin-right: 15px;
-}
-
-.logo {
-    width: 40px;
-    height: 40px;
-}
-
-body {
-    padding-top: 100px;
-}
-
-/* Barra di ricerca minimalista */
-.search-container {
-    text-align: center;
-    margin: 50px auto;
-}
-
-#searchInput {
-    width: 50%;
-    padding: 18px;
-    font-size: 18px;
-    border: 1px solid #ddd;
-    border-radius: 40px;
-    transition: all 0.3s ease;
-    background-color: #FFFFFF;
-}
-
-#searchInput:focus {
-    outline: none;
-    border-color: #fac960;
-    box-shadow: none;
-}
-
-/* Pulsanti di filtro con look pulito e icone */
-.filter-container {
-    text-align: center;
-    margin: 40px 0;
-}
-
-.filter-btn {
-    padding: 12px 30px;
-    background-color: #FFFFFF;
-    color: #333;
-    border: 2px solid #fac960;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 40px;
-    margin: 0 10px;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-}
-
-.filter-btn img {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px; /* Spazio per l'icona */
-}
-
-.filter-btn:hover {
-    background-color: #ffcc00;
-    color: white;
-    border-color: #ffcc00;
-}
-
-.filter-btn.active {
-    background-color: #ffcc00;
-    color: white;
-    border-color: #ffcc00;
-}
-
-/* Container minimalista per la tabella */
-.container {
-    width: 85%;
-    margin: 50px auto;
-    background-color: white;
-    padding: 50px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-/* Stile della tabella, con linee più sottili e spazio bianco */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-    text-align: left;
-}
-
-th, td {
-    padding: 20px;
-    border-bottom: 1px solid #f1f1f1;
-    text-align: left;
-    word-wrap: break-word;
-}
-
-th {
-    background-color: transparent;
-    color: #333;
-    text-transform: uppercase;
-    font-weight: 600;
-    font-size: 14px;
-}
-
-td {
-    background-color: #fff;
-    font-size: 16px;
-    color: #555;
-}
-
-/* Colore dinamico per la disponibilità */
-.disponibile {
-    color: green;
-    font-weight: bold;
-}
-
-.in-prestito {
-    color: red;
-    font-weight: bold;
-}
-
-/* Pulsanti interattivi all'interno della tabella */
-td:last-child {
-    text-align: center;
-}
-
-button {
-    padding: 10px 25px;
-    background-color: #fac960;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    border-radius: 40px;
-    transition: all 0.3s ease;
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
-}
-
-button:hover {
-    background-color: #ffcc00;
-    transform: scale(1.05);
-}
-
-/* Responsive */
-@media screen and (max-width: 768px) {
-    #searchInput {
-        width: 90%;
-        font-size: 16px;
-    }
-
-    .container {
-        padding: 30px;
-    }
-
-    table, th, td {
-        font-size: 14px;
-    }
-
-    button {
-        padding: 8px 20px;
-    }
-
-    .navbar {
-        font-size: 18px;
-    }
-}
-
-    </style>
+    <title>Biblioteca Scolastica I.C. Alta Val di Sole</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="all.min.css"> <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="templatemo-xtra-blog.css">
 </head>
 <body>
-<!-- Barra di navigazione fissa -->
-<header class="navbar">
-    <div class="logo-container">
-        <img src="Logo.png" alt="Logo Scuola" class="logo">
+
+<!-- Navbar/Header Section -->
+<header class="tm-header">
+    <div class="tm-header-wrapper">
+        <div class="tm-site-header">
+            <div class="tm-site-logo">
+                <i class="fas fa-book"></i>
+            </div>
+            <h1 class="text-white">Biblioteca Scolastica I.C. Alta Val di Sole</h1>
+        </div>
+        <nav class="tm-nav">
+            <ul>
+                <li class="tm-nav-item active"><a href="#" class="tm-nav-link">
+                    <i class="fas fa-home"></i>
+                    Home
+                </a></li>
+                <li class="tm-nav-item"><a href="#" class="tm-nav-link">
+                    <i class="fas fa-book-open"></i>
+                    Filtri: Libri
+                </a></li>
+                <li class="tm-nav-item"><a href="#" class="tm-nav-link">
+                    <i class="fas fa-film"></i>
+                    Filtri: DVD
+                </a></li>
+            </ul>
+        </nav>
     </div>
-    <h1 class="animate__animated animate__bounce">Biblioteca Scolastica I.C. Alta Val di Sole</h1>
 </header>
 
-<div class="search-container">
-    <input type="text" id="searchInput" placeholder="Cerca per titolo o autore..." onkeyup="filtraLibri()">
+<!-- Main Content -->
+<div class="tm-main">
+    <!-- Search Section -->
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <form class="form-inline tm-search-form">
+                    <input class="form-control tm-search-input" type="text" id="searchInput" placeholder="Cerca per titolo o autore..." onkeyup="filtraLibri()">
+                    <button class="tm-search-button" type="submit">
+                        <i class="fas fa-search tm-search-icon"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Books Section -->
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="tm-post-title">Lista di Libri</h2>
+                <table class="table table-bordered" id="libriTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Titolo</th>
+                            <th>Autore</th>
+                            <th>Disponibilità</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Book data will go here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- Pulsanti di filtro centrati -->
-<div class="filter-container">
-    <button class="filter-btn active" onclick="filtraPerTipo('Tutti')">Tutti</button>
-    <button class="filter-btn" onclick="filtraPerTipo('Libro')"><img src="book.png" alt="Libri"> Libri</button>
-    <button class="filter-btn" onclick="filtraPerTipo('DVD')"><img src="dvd.png" alt="DVD"> DVD</button>
-</div>
-
-<div class="container">
-    <table id="libriTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Titolo</th>
-                <th>Autore</th>
-                <th>Disponibilità</th>
-                <th><!-- Vuota, solo per i pulsanti --></th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- I dati dei libri verranno aggiunti qui -->
-        </tbody>
-    </table>
-</div>
-
+<script src="jquery.min.js"></script>
+<script src="templatemo-script.js"></script>
 <script>
+    // Existing JavaScript code from your site to handle filters and book display.
     const sheetId = '1bHmR_g_8Rp54M1lLnZd3nD78EqRTIKNSzl1mE2-hRzQ';
     const apiKey = 'AIzaSyCBAMHlMKwdPs8hlvRnxxNOWwdXxqnKC3k';
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/libreriaprincipale?key=${apiKey}`;
@@ -277,36 +91,22 @@ button:hover {
         const response = await fetch(url);
         const data = await response.json();
         const libri = data.values;
-
         const tbody = document.querySelector('#libriTable tbody');
         tbody.innerHTML = '';
-
         libri.shift();
-
         libri.forEach(libro => {
             const [id, titolo, autore, disponibilita, tipo] = libro;
-
-            const disponibilitaClass = disponibilita === 'Disponibile' ? 'disponibile' : 'in-prestito';
-
+            const disponibilitaClass = disponibilita === 'Disponibile' ? 'text-success' : 'text-danger';
             const tr = document.createElement('tr');
-            tr.setAttribute('data-tipo', tipo);
-
             tr.innerHTML = `
                 <td>${id}</td>
                 <td>${titolo}</td>
                 <td>${autore}</td>
                 <td class="${disponibilitaClass}">${disponibilita}</td>
-                <td>
-                    ${disponibilita === 'Disponibile' 
-                        ? `<button onclick="prendiInPrestito(${id})">Prendi in Prestito</button>`
-                        : `<button onclick="restituisciLibro(${id})">Restituisci</button>`}
-                </td>
+                <td><button class="btn btn-primary" onclick="prendiInPrestito(${id})">Prenota</button></td>
             `;
-
             tbody.appendChild(tr);
         });
-
-        filtraLibri();
     }
 
     function prendiInPrestito(idLibro) {
@@ -314,38 +114,21 @@ button:hover {
         window.open(urlModuloPrestito, '_blank');
     }
 
-    function restituisciLibro(idLibro) {
-        const urlModuloRestituzione = `https://docs.google.com/forms/d/e/1FAIpQLSfqR3bdauSlexTrCqcPnn05kjbOnE4utylDPUoIdRHqheSYCg/viewform?entry.300178690=${idLibro}`;
-        window.open(urlModuloRestituzione, '_blank');
-    }
-
     function filtraLibri() {
         const input = document.getElementById("searchInput").value.toLowerCase();
         const tr = document.querySelectorAll("#libriTable tbody tr");
-
         tr.forEach(row => {
             const tdTitolo = row.cells[1].textContent.toLowerCase();
             const tdAutore = row.cells[2].textContent.toLowerCase();
-            const tipo = row.getAttribute('data-tipo');
-            
-            const matchText = tdTitolo.includes(input) || tdAutore.includes(input);
-            const matchTipo = tipoFiltrato === 'Tutti' || tipoFiltrato === tipo;
-
-            row.style.display = (matchText && matchTipo) ? "" : "none";
+            row.style.display = (tdTitolo.includes(input) || tdAutore.includes(input)) ? "" : "none";
         });
-    }
-
-    function filtraPerTipo(tipo) {
-        tipoFiltrato = tipo;
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelector(`button[onclick="filtraPerTipo('${tipo}')"]`).classList.add('active');
-        filtraLibri();
     }
 
     caricaLibri();
 </script>
-
 </body>
+</html>
+
 </html>
 
 
