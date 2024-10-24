@@ -13,6 +13,7 @@
     :root {
   --motion-ease: cubic-bezier(0.68, -0.6, 0.32, 1.6);
   --motion-duration: 0.3s;
+    -webkit-font-smoothing: antialiased;
 }
 
 * {
@@ -29,15 +30,15 @@
         overflow-x: hidden;
     }
     .Card {
-  padding: 1px;
-  border-radius: var(--border-radius);
-  background: linear-gradient(-67deg, rgba(#c8d8e7, .7), rgba(255,255,255,.8));
-  overflow: hidden;
-  box-shadow: 
-    -2px -2px 6px rgba(#fff, .6),
-    2px 2px 12px #c8d8e7;
-  width: 380px;
-}
+      padding: 1px;
+      border-radius: var(--border-radius);
+      background: linear-gradient(-67deg, rgba(#c8d8e7, .7), rgba(255,255,255,.8));
+      overflow: hidden;
+      box-shadow: 
+      -2px -2px 6px rgba(#fff, .6),
+      2px 2px 12px #c8d8e7;
+      width: 380px;
+    }
 
 .CardInner {
   padding: 16px 16px;
