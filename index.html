@@ -100,11 +100,11 @@
             const disponibilitaClass = disponibilita === 'Disponibile' ? 'text-success' : 'text-danger';
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${id}</td>
-                <td>${titolo}</td>
-                <td>${autore}</td>
-                <td class="${disponibilitaClass}">${disponibilita}</td>
-                <td><button class="btn btn-primary" onclick="prendiInPrestito(${id})">Prenota</button></td>
+            <td>${id}</td>
+            <td>${titolo}</td>
+            <td>${autore}</td>
+            <td class="${disponibilitaClass}">${disponibilita}</td>
+            <td><button class="btn-prenota" onclick="prendiInPrestito(${id})">Prenota</button></td>
             `;
             tbody.appendChild(tr);
         });
