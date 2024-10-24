@@ -114,20 +114,21 @@
     padding: 50px;
     position: relative;
     min-height: 100vh;
-       z-index: 1;
+    z-index: 1; /* Assicura che il contenuto sia sopra lo sfondo */
+    overflow: hidden; /* Evita che i contenuti escano fuori dalla vista */
 }
 .tm-main::before {
     content: "";
-    position: absolute;
+    position: fixed; /* Lo sfondo sarà fisso e non si sposterà durante lo scroll */
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('nonsfocato.jpg'); /* Your background image */
-    background-size: cover;
-    background-position: center;
-    filter: blur(2px); /* Blur the background */
-    z-index: -1; /* Ensure the background stays behind the content */
+    width: 100vw; /* Assicura che lo sfondo copra tutta la larghezza della finestra */
+    height: 100vh; /* Assicura che lo sfondo copra tutta l'altezza della finestra */
+    background-image: url('nonsfocato.jpg'); /* Immagine di sfondo */
+    background-size: cover; /* Copri l'intera area con l'immagine, adattandola proporzionalmente */
+    background-position: center; /* Centra l'immagine */
+    filter: blur(1px); /* Sfoca l'immagine di sfondo */
+    z-index: -1; /* Assicura che lo sfondo sia dietro il contenuto */
 }
 
     #libriTable {
