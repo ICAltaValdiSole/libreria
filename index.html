@@ -109,16 +109,20 @@
         text-decoration: none;
     }
 
-    .tm-main {
+   .tm-main {
         margin-left: 300px;
         padding: 50px;
-        background-color: #f9f9f9;
+        background-image: url('nonsfocato.jpg'); /* L'immagine che hai caricato */
+        background-size: cover;
+        background-position: center;
+        filter: blur(5px); /* Sfuoca leggermente l'immagine */
         min-height: 100vh;
     }
 
-    #libriTable {
+      #libriTable {
         width: 100%;
         border-collapse: collapse;
+        background-color: rgba(255, 255, 255, 0.9); /* Sfondo semi-trasparente per la tabella */
     }
 
     #libriTable th, #libriTable td {
@@ -135,6 +139,19 @@
     #libriTable .id-column {
         display: none;
     }
+         #searchInput {
+        width: 100%;
+        padding: 10px;
+        font-size: 1.2rem;
+        background-color: #e0e0e0; /* Sfondo grigio */
+        color: #333; /* Testo nero */
+        border: 1px solid #ccc;
+    }
+
+    #searchInput::placeholder {
+        color: #35424a; /* Colore del testo del placeholder */
+    }
+
 
     button {
   appearance: none;
