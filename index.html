@@ -37,11 +37,11 @@
       box-shadow: 
       -2px -2px 6px rgba(#fff, .6),
       2px 2px 12px #c8d8e7;
-      width: 380px;
+      width: 500px;
     }
 
 .CardInner {
-  padding: 16px 16px;
+  padding: 16px 0px;
   background-color: #fffff;
   border-radius: var(--border-radius);
 }
@@ -50,22 +50,7 @@
   display: flex;
 }
 
-.Icon {
-  min-width: 46px;
-  min-height: 46px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--border-radius);
-  margin-right: 12px;
-  box-shadow: 
-    -2px -2px 6px rgba(#fff, .6),
-    2px 2px 12px #c8d8e7;
-    
-  svg {
-    transform: translate(-1px, -1px);    
-  }
-}
+
 
 label {
   font-family: "Hind", sans-serif;
@@ -351,19 +336,11 @@ button:active > svg > path {
 
 <div class="tm-main">
     <div style="margin-bottom: 20px;">
-        
-        
-        
-        <div class="Card">
+    <div class="Card">
   <div class="CardInner">
-  <div class="container">
-    <div class="Icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#657789" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    </div>
     <div class="InputContainer">
-      <input type="text" id="searchInput" placeholder="Cerca per titolo o autore..." style="width: 100%; padding: 10px; font-size: 1.2rem;">
+      <input type="text" id="searchInput" placeholder="Cerca per titolo o autore..." style="width: 100%; padding: 8px; font-size: 1.1rem;">
     </div>
-  </div>
  </div>
  </div>
 
